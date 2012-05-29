@@ -487,7 +487,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 		try {
 			JSONArray arrayObject = result.getJSONObject("queue").getJSONArray("slots");
 			for(int i = 0, max = arrayObject.length(); i < max; i++) {
-				NzoItem item = new HistoryItem().buildFromJson(arrayObject.getJSONObject(i));
+				NzoItem item = new QueueItem().buildFromJson(arrayObject.getJSONObject(i));
 				queueItems.add(item);
 			}
 			queueFragment.updateItems(queueItems);
