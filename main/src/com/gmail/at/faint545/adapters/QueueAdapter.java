@@ -2,6 +2,7 @@ package com.gmail.at.faint545.adapters;
 
 import java.util.ArrayList;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -22,6 +23,8 @@ public class QueueAdapter extends SabAdapter {
   private Context context;
   private int rowId;
   private int checkCount;
+
+  private static final String LOGTAG = "QueueAdapter";
 
   public QueueAdapter(Context context, int rowId, ArrayList<NzoItem> items, ArrayList<Boolean> checkedPositions) {
     this.items = items;
@@ -49,7 +52,7 @@ public class QueueAdapter extends SabAdapter {
   public View getView(final int position, View convertView, ViewGroup parent) {
     
     // Setup view(s).
-    
+    Log.i(LOGTAG,"getView");
     ViewHolder viewHolder = null;
     if(convertView == null) {
       viewHolder = new ViewHolder();

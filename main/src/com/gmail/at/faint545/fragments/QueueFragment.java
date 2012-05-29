@@ -2,6 +2,7 @@ package com.gmail.at.faint545.fragments;
 
 import java.util.ArrayList;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,7 @@ import com.gmail.at.faint545.adapters.QueueAdapter;
 import com.gmail.at.faint545.adapters.SabAdapter;
 
 public class QueueFragment extends SabListFragment {
+  private static final String LOGTAG = "QueueFragment";
   public static final String EXTRA = "extra";
 
   private ArrayList<NzoItem> queueItems = new ArrayList<NzoItem>();
@@ -57,6 +59,7 @@ public class QueueFragment extends SabListFragment {
    */
   @Override
   public void updateItems(ArrayList<NzoItem> items) {
+    Log.i(LOGTAG,"updateItems");
     queueItems.clear();
     queueItems.addAll(items);
     checkedPositions.clear();
