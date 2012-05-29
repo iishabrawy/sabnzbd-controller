@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <style name="Theme" />
+
+    <!-- Base theme -->
+    <style name="Theme.Sabnzbd" parent="@style/Theme.Sherlock.Light.DarkActionBar">
+        <item name="android:windowBackground">@color/background</item>
+        
+        <item name="actionBarStyle">@style/Theme.Sabnzbd.ActionBar.Style</item>
+        <item name="android:actionBarStyle">@style/Theme.Sabnzbd.ActionBar.Style</item>
+        
+        <item name="android:selectableItemBackground">@drawable/abs__item_selector</item>
+        <item name="actionBarItemBackground">@drawable/abs__item_selector</item>
+        
+        <item name="actionModeStyle">@style/ActionMode</item>
+        <item name="android:actionModeStyle">@style/ActionMode</item>              
+    </style>
+
+    <!-- Default ActionBar style -->
+    <style name="Theme.Sabnzbd.ActionBar.Style" parent="Widget.Sherlock.Light.ActionBar.Solid.Inverse">
+        <item name="background">@color/abs__background</item>
+        <item name="android:background">@color/abs__background</item>
+        
+        <item name="backgroundSplit">@color/abs__background</item>
+        <item name="android:backgroundSplit">@color/abs__background</item>        
+    </style>
+    
+    <!-- A Sabnzbd theme with an alternative ActionBar style -->
+    <style name="Theme.Sabnzbd.Alt" parent="@style/Theme.Sabnzbd">
+        <item name="actionBarStyle">@style/Theme.Sabnzbd.ActionBar.Style.Alt</item>
+        <item name="android:actionBarStyle">@style/Theme.Sabnzbd.ActionBar.Style.Alt</item>
+    </style>
+
+    <!-- Alternative ActionBar style -->
+    <style name="Theme.Sabnzbd.ActionBar.Style.Alt" parent="Widget.Sherlock.Light.ActionBar.Solid.Inverse">
+        <item name="background">@drawable/abs__background</item>
+        <item name="android:background">@drawable/abs__background</item>       
+    </style>
+
+    <!-- Additional styles -->
+    <style name="Theme.Sabnzbd.ForceOverflow" parent="@style/Theme.Sabnzbd">
+        <item name="absForceOverflow">true</item>
+    </style>
+
+    <style name="ActionMode" parent="Sherlock.__Widget.ActionMode">
+        <item name="background">@color/abs__background</item>
+    </style>
+    
+    <!-- ListView separator style -->
+    <style name="ListView"/>
+    <style name="ListView.Separator">
+        <item name="android:background">@color/abs__background</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:paddingLeft">6dip</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    
+    <style name="TextView"/>
+    <style name="TextView.Title">
+        <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
+        <item name="android:textColor">@android:color/black</item>
+    </style>
+    <style name="TextView.Subtitle">
+        <item name="android:textAppearance">@android:style/TextAppearance.Small</item>
+    </style>
+
+</resources>

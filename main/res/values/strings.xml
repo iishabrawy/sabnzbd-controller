@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">SABNzbd</string>
+    <string name="title_new_remote">New Remote</string>
+    <string name="title_update_remote">Add/Update Remote</string>
+    <string name="general">General</string>
+    <string name="auth">Authentication</string>
+
+    <!-- Empty messages -->
+    <string name="queue_empty">Your queue is empty.\nYou may want to refresh.</string>
+    <string name="history_empty">Your history is clean.\nNo one will ever know…</string>
+    <string name="status_empty">Coming soon…</string>
+
+    <!-- Titles for Fragments -->
+    <string-array name="title_array">
+        <item>Queue</item>
+        <item>History</item>
+        <item>Status</item>
+    </string-array>
+
+    <!-- Titles for Activities -->
+    <string name="title__clear_history">Clear History</string>
+
+    <!-- Titles for dialogs -->
+    <string name="title__error">Error</string>
+    <string name="title__speed">Speed Limit (KB/s)</string>
+
+    <!-- Menu strings -->
+    <string name="menu__refresh">Refresh</string>
+    <string name="menu__speed_limit">Speed Limit</string>
+    <string name="menu__clear_history">Clear History</string>
+    <string name="menu__pause_queue">Pause</string>
+    <string name="menu__resume_queue">Resume</string>
+    <string name="menu__select_all">Select All</string>
+    <string name="menu__deselect_all">Deselect All</string>
+    <string name="menu__edit">Edit</string>
+    <string name="menu__delete">Delete</string>
+
+    <!-- Strings for GUI elements -->
+    <string name="select_all">Select All</string>
+    <string name="delete">Delete</string>
+    <string name="retry">Retry</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+    <string name="category">Category:</string>
+
+    <!-- Loading messages -->
+    <string name="loading">Loading from SABNzbd…</string>
+    <string name="removing">Removing selected items…</string>
+    <string name="pausing">Pausing selected items…</string>
+    <string name="resuming">Resuming selected items…</string>
+
+    <!-- Verbose messages -->
+    <string name="nothing_selected">No items are selected!</string>
+    <string name="speed_limit_set">Speed limit set!</string>
+    <string name="speed_limit_failed">Failed to set speed limit!</string>
+    <string name="delete_failed">Delete failed!</string>
+    <string name="retry_failed">Retry failed!</string>
+    <string name="failed">Failed!</string>
+    <string name="success">Success!</string>
+    <string name="remote_fail_save">Could not save remote! Check your preferences.</string>
+
+    <!-- Nickname -->
+    <string name="prefs_nickname_title">Nickname</string>
+    <string name="prefs_nickname_description">A nickname you will remember.</string>
+    
+    <!-- Host -->
+    <string name="prefs_host_title">Host</string>
+    <string name="prefs_host_description">Host SABNzbd should listen on.</string>
+    
+    <!-- Port -->
+    <string name="prefs_port_title">Port</string>
+    <string name="prefs_port_description">Port SABNzbd should listen on.</string>
+    
+    <!-- Refresh interval -->
+    <string name="prefs_refresh_interval_title">Refresh Interval</string>
+    <string name="prefs_refresh_interval_description">Auto refresh frequency.</string>
+    
+    <!-- API Key -->
+    <string name="prefs_apikey_title">API Key</string>
+    <string name="prefs_apikey_description">This key will give this app full access to SABNzbd.</string>
+    
+    <!-- Username -->
+    <string name="prefs_username_title">Username</string>
+    <string name="prefs_username_description">Optional authentication username.</string>
+    
+    <!--  Password -->
+    <string name="prefs_password_title">Password</string>
+    <string name="prefs_password_description">Optional authentication password.</string>
+
+    <!-- Refresh intervals -->
+    <string-array name="refresh_intervals">
+        <item>Off</item>
+        <item>3 Minutes</item>
+        <item>5 Minutes</item>
+        <item>7 Minutes</item>
+        <item>10 Minutes</item>
+        <item>20 Minutes</item>
+        <item>30 Minutes</item>
+        <item>1 Hour</item>
+    </string-array>
+    
+    <!-- Refresh interval values -->
+    <string-array name="refresh_interval_values">
+        <item>0</item>
+        <item>180000</item>
+        <item>300000</item>
+        <item>420000</item>
+        <item>600000</item>
+        <item>1200000</item>
+        <item>1800000</item>
+        <item>3600000</item>
+    </string-array>
+</resources>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+
+    <item
+        android:id="@+id/resume"
+        android:title="@string/menu__resume_queue"
+        android:icon="@drawable/ic_media_play"
+        android:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/pause"
+        android:title="@string/menu__pause_queue"
+        android:icon="@drawable/ic_media_pause"
+        android:showAsAction="ifRoom"/>
+
+</menu>

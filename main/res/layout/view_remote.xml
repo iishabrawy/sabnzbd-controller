@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:vpi="http://schemas.android.com/apk/res/com.gmail.at.faint545"
+    android:id="@+id/root"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" >
+
+    <com.viewpagerindicator.TitlePageIndicator
+        android:id="@+id/indicator"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/vpi__background"
+        vpi:clipPadding="-15dip"
+        vpi:footerColor="@color/sab_yellow"
+        vpi:footerIndicatorHeight="5dip"
+        vpi:footerIndicatorStyle="triangle"
+        vpi:footerLineHeight="3dip"
+        vpi:footerPadding="8dip"
+        vpi:selectedBold="false"
+        vpi:selectedColor="@android:color/white"
+        android:textColor="#33FFFFFF"
+        vpi:titlePadding="55dip"
+        vpi:topPadding="8dip" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/pager"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:visibility="invisible" />
+
+</LinearLayout>

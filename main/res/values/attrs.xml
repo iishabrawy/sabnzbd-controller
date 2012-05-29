@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="StyledTextView">
+        <attr name="fontface" format="string"/>
+    </declare-styleable>
+    
+    <declare-styleable name="ListView">
+        <attr name="fadingColor" format="color"/>
+    </declare-styleable>
+</resources>

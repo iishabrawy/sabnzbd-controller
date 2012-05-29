@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_row_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="false"
+    android:orientation="vertical" >
+
+    <TextView
+        android:id="@+id/remote_nick"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingLeft="10dip"
+        android:textColor="@android:color/black"
+        android:textAppearance="@android:style/TextAppearance.Large" />
+
+    <com.gmail.at.faint545.views.IndependentButton
+        android:id="@+id/remote_options"
+        android:layout_width="48dip"
+        android:layout_height="48dip"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/remote_edit_selector"
+        android:src="@drawable/ic_menu_moreoverflow" />  
+
+</RelativeLayout>

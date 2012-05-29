@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <com.gmail.at.faint545.views.IndependentCheckBox
+        android:id="@+id/history_row_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:button="@drawable/btn_check_holo_light"
+        android:focusable="false"
+        android:gravity="top" />
+
+    <TextView
+        android:id="@+id/history_row_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="7dip"
+        android:layout_toLeftOf="@+id/history_row_status"
+        android:layout_toRightOf="@+id/history_row_checkbox"
+        android:gravity="top"
+        android:singleLine="true"
+        android:textAppearance="@android:style/TextAppearance.Medium" />
+
+    <TextView
+        android:id="@+id/history_row_size"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/history_row_name"
+        android:layout_below="@+id/history_row_name"
+        android:singleLine="true"
+        android:textAppearance="@android:style/TextAppearance.Small" />
+
+    <TextView
+        android:id="@+id/history_row_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/history_row_name"
+        android:textAppearance="@android:style/TextAppearance.Small" />
+
+    <ImageView
+        android:id="@+id/history_row_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:paddingTop="5dip"
+        android:src="@drawable/indicator_done" />
+
+</RelativeLayout>
