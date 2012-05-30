@@ -6,3 +6,5 @@ gen/
 *.eml
 *.classpath
 *.project
+*.apk
+
