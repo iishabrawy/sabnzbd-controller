@@ -1,19 +1,17 @@
 package com.gmail.at.faint545.services;
 
-import java.io.IOException;
-
+import android.app.Service;
+import android.os.AsyncTask;
+import com.gmail.at.faint545.utils.HttpResponseParser;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
+import java.io.IOException;
 
-import android.app.Service;
-import android.os.AsyncTask;
-
-import com.gmail.at.faint545.utils.HttpResponseParser;
-
-public class DownloadTask extends AsyncTask<HttpPost, Void, String> {
+public class SabTask extends AsyncTask<HttpPost, Void, String> {
+  private static final String LOGTAG = "SabTask";
 	
 	private OnDownloadTaskFinished mCallback;
 	
@@ -22,7 +20,7 @@ public class DownloadTask extends AsyncTask<HttpPost, Void, String> {
 		public void onIncomplete();
 	}
 	
-	public DownloadTask(Service service) {
+	public SabTask(Service service) {
 		if(service instanceof OnDownloadTaskFinished)
 			mCallback = (OnDownloadTaskFinished) service;
 		else
@@ -48,7 +46,7 @@ public class DownloadTask extends AsyncTask<HttpPost, Void, String> {
 	}
 	
 	@Override
-  protected void onPostExecute(String result) {		
+  protected void onPostExecute(String result) {
     if(result != null)
     	mCallback.onComplete(result);
     else
