@@ -15,15 +15,11 @@
  */
 package com.gmail.at.faint545.utils;
 
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class StringUtils
 {
-  private static String[] months = {"Jan","Feb","Mar","Apr","May","Jun","Jul",
-    "Aug","Sep","Oct","Nov","Dec"};
-  private static String[] amPm = {"am","pm"};
-  
   /**
    * Checks a string to see if it is empty.
    * A string is empty if it is null or has 0 characters.
@@ -50,25 +46,23 @@ public class StringUtils
   }
   
   public static String unixTimeToShortDate(long timeStampInSeconds) {
-    Calendar date = Calendar.getInstance();
-    Calendar now = Calendar.getInstance();
-    StringBuilder dateString = new StringBuilder();
-    
-    date.setTimeInMillis(timeStampInSeconds*1000);
-    
-    if(date.get(Calendar.MONTH) == now.get(Calendar.MONTH) &&
-        date.get(Calendar.DATE) == now.get(Calendar.DATE) &&
-        date.get(Calendar.YEAR) == now.get(Calendar.YEAR)) {      
-      dateString.append(date.get(Calendar.HOUR)).append(":");
-      dateString.append(date.get(Calendar.MINUTE));
-      dateString.append(amPm[date.get(Calendar.AM_PM)]);
+    Date finishedDate = new Date(timeStampInSeconds*1000);
+    // Calendar date = Calendar.getInstance();
+    // date.setTimeInMillis(timeStampInSeconds*1000);
+
+    Date now = new Date();
+    // Calendar now = Calendar.getInstance();
+    SimpleDateFormat formatter;
+
+    if(finishedDate.getMonth() == now.getMonth() &&
+        finishedDate.getDate() == now.getDate() &&
+        finishedDate.getYear() == now.getYear()) {
+      formatter = new SimpleDateFormat("hh:mm a");
     }
     else {
-      dateString.append(months[date.get(Calendar.MONTH)]);
-      dateString.append(" ").append(date.get(Calendar.DATE));      
+      formatter = new SimpleDateFormat("MMM d");
     }
-    
-    return dateString.toString();
+    return formatter.format(finishedDate);
   }
   
   public static String normalizeSeconds(long seconds) {
