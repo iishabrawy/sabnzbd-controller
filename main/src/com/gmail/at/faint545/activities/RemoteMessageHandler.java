@@ -1,16 +1,15 @@
 package com.gmail.at.faint545.activities;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import com.gmail.at.faint545.services.DownloadService;
-
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import com.gmail.at.faint545.services.DownloadService;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class RemoteMessageHandler extends Handler {
+  private static final String LOGTAG = "RemoteMessageHandler";
 
 	private RemoteMessageListener mCallback;
 
@@ -32,6 +31,8 @@ public class RemoteMessageHandler extends Handler {
 		 * @param message The error message to be shown.
 		 */
 		public void onDownloadFailure(String message);
+
+    public void onStatusReceived(boolean status, String errorMsg);
 	}
 
 	public RemoteMessageHandler(Context context) {
@@ -50,7 +51,7 @@ public class RemoteMessageHandler extends Handler {
 
 		switch(msg.what) {
 		
-		case DownloadService.MSG_SUCCESS:
+		case DownloadService.SUCCESS:
 			try {
 				JSONObject resultObject = new JSONObject(result);
 				if(resultObject.has("history")) { // It's history results
@@ -59,13 +60,18 @@ public class RemoteMessageHandler extends Handler {
 				else if(resultObject.has("queue")) { // It's queue results
 					mCallback.onReceiveQueue(resultObject);
 				}
+        else if(resultObject.has("status")) { // It's an action result
+          boolean status = resultObject.getBoolean("status");
+          String error = resultObject.has("error") ? resultObject.getString("error") : null;
+          mCallback.onStatusReceived(status,error);
+        }
 			} 
 			catch (JSONException e) {
 				e.printStackTrace();
 			}
 			break;
 			
-		case DownloadService.MSG_FAILURE:
+		case DownloadService.FAILURE:
 			mCallback.onDownloadFailure(result);
 			break;
 		

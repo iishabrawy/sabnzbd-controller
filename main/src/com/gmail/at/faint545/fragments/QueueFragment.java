@@ -1,6 +1,5 @@
 package com.gmail.at.faint545.fragments;
 
-import java.util.ArrayList;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -14,6 +13,7 @@ import com.gmail.at.faint545.R;
 import com.gmail.at.faint545.Remote;
 import com.gmail.at.faint545.adapters.QueueAdapter;
 import com.gmail.at.faint545.adapters.SabAdapter;
+import java.util.ArrayList;
 
 public class QueueFragment extends SabListFragment {
   private static final String LOGTAG = "QueueFragment";

@@ -1,27 +1,10 @@
 package com.gmail.at.faint545.activities;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import android.util.Log;
-import com.gmail.at.faint545.fragments.*;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
+import android.content.*;
+import android.os.*;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.InputType;
@@ -31,7 +14,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-
+import android.widget.Toast;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -42,11 +25,17 @@ import com.gmail.at.faint545.Remote;
 import com.gmail.at.faint545.activities.RemoteMessageHandler.RemoteMessageListener;
 import com.gmail.at.faint545.adapters.ViewRemotePagerAdapter;
 import com.gmail.at.faint545.factories.AlertDialogFactory;
+import com.gmail.at.faint545.fragments.*;
 import com.gmail.at.faint545.receiver.AlarmReceiver;
 import com.gmail.at.faint545.services.DownloadService;
 import com.gmail.at.faint545.utils.InputDialogBuilder;
 import com.gmail.at.faint545.views.ProgressDialog;
 import com.viewpagerindicator.TitlePageIndicator;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 public class ViewRemoteActivity extends SabFragmentActivity implements CheckChangedListener, ServiceConnection, RemoteMessageListener {
 
@@ -102,10 +91,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 		bindToService();
 
     Intent downloader = new Intent();
-    downloader.putExtra("url", mRemote.getUrl());
-    downloader.putExtra("username", mRemote.getUsername());
-    downloader.putExtra("password", mRemote.getPassword());
-    downloader.putExtra("apikey", mRemote.getAPIKey());
+    downloader.putExtras(buildBaseMessage());
 
     if(mRemote.hasRefreshInterval()) {
       downloader.setClass(getApplicationContext(),AlarmReceiver.class);
@@ -197,7 +183,10 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 			builder.setOkButton(R.string.ok, new InputDialogBuilder.OnClickListener() {        
 				@Override
 				public void onClick(String result, DialogInterface dialog) {
-
+          Bundle b = buildBaseMessage();
+          b.putString("value",result);
+          sendMessageToService(b, DownloadService.ACTION_SET_SPEEDLIMIT);
+          Toast.makeText(getApplicationContext(),R.string.setting_speed_limit,Toast.LENGTH_SHORT).show();
 				}
 			});
 			builder.setNegativeButton(R.string.cancel, null);
@@ -328,24 +317,43 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 
 		@Override
 		public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+      Bundle message = buildBaseMessage();
 
 			switch(item.getItemId()) {
-			case R.id.delete:        
-				// Delete all items
-				mActionMode.finish(); // Remove the ActionMode
+			case R.id.delete:
+				// Get the ids that have been checked
+        String ids = currentVisibleFragment.getCheckedIds();
+        // Add additional arguments to be executed.
+        message.putString("value",ids);
+        message.putString("mode",getCurrentMode());
+        // Send the message
+        sendMessageToService(message, DownloadService.ACTION_DELETE);
+        Toast.makeText(getApplicationContext(),R.string.removing,Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.select_all:
-				// Check all items
+				currentVisibleFragment.setAllChecked(true);
 				break;
 			case R.id.pause:
-				// Pause
-				mActionMode.finish();
+        // Get the ids that have been checked
+				ids = currentVisibleFragment.getCheckedIds();
+        // Add it to the message Bundle
+        message.putString("value", ids);
+        // Send the message
+        sendMessageToService(message, DownloadService.ACTION_PAUSE);
+        Toast.makeText(getApplicationContext(),R.string.pausing,Toast.LENGTH_SHORT).show();
 				break;
 			case R.id.resume:
-				// Resume
-				mActionMode.finish();
+        // Get the ids that have been checked
+        ids = currentVisibleFragment.getCheckedIds();
+        // Add it to the message Bundle
+        message.putString("value", ids);
+        // Send the message
+        sendMessageToService(message, DownloadService.ACTION_RESUME);
+        Toast.makeText(getApplicationContext(),R.string.resuming,Toast.LENGTH_SHORT).show();
 				break;
 			}
+
+      mActionMode.finish();
 			return true;
 		}
 	};
@@ -396,7 +404,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 		mServiceMessenger = new Messenger(service);
 		// textStatus.setText("Attached.");
 		try {
-			Message msg = Message.obtain(null, DownloadService.MSG_REGISTER_CLIENT);
+			Message msg = Message.obtain(null, DownloadService.REGISTER_CLIENT);
 			msg.replyTo = mMessenger;
 			mServiceMessenger.send(msg);
 		} 
@@ -426,7 +434,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 			// If we have received the service, and hence registered with it, then now is the time to unregister.
 			if (mServiceMessenger != null) {
 				try {
-					Message msg = Message.obtain(null, DownloadService.MSG_UNREGISTER_CLIENT);
+					Message msg = Message.obtain(null, DownloadService.UNREGISTER_CLIENT);
 					msg.replyTo = mMessenger;
 					mServiceMessenger.send(msg);
 				} 
@@ -439,6 +447,27 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 			mIsBoundToService = false;
 		}
 	}
+
+  /**
+   * Send data to DownloadService.
+   * @param data The data to be sent.
+   * @param action The action to execute.
+   */
+  private void sendMessageToService(Bundle data,int action) {
+    if (mIsBoundToService) {
+      if (mServiceMessenger != null) {
+        try {
+          Message msg = Message.obtain(null,action);
+          msg.setData(data);
+          msg.replyTo = mMessenger;
+          mServiceMessenger.send(msg);
+        }
+        catch (RemoteException e) {
+          e.printStackTrace();
+        }
+      }
+    }
+  }
 
 	//////////////////////////////////////////////////
 	// Service functions END
@@ -502,12 +531,60 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 		showDialog(errorDialog, message);
 	}
 
-	/**
+  @Override
+  public void onStatusReceived(boolean status,String errorMsg) {
+    onFinishConnection();
+    if(status) { // Re-fresh data
+      downloadData();
+      Toast.makeText(getApplicationContext(),R.string.refreshing_data,Toast.LENGTH_SHORT).show();
+    }
+    else {
+      showDialog(errorDialog, errorMsg);
+    }
+  }
+
+  /**
 	 * When data connection has completed, regardless if it was
 	 * successful or not, clean up the UI.
 	 */
 	private void onFinishConnection() {
+    if(!queueDownloadCompleted)
+      queueDownloadCompleted = true;
+    if(!historyDownloadCompleted)
+      historyDownloadCompleted = true;
 		setPagerVisibility(View.VISIBLE);
 		dismissDialogs();
 	}
+
+  /**
+   * Builds a Bundle of common arguments (URL and authentication)
+   * to be passed to DownloadService to be executed.
+   * @return A Bundle.
+   */
+  private Bundle buildBaseMessage() {
+    Bundle b = new Bundle();
+    b.putString("url", mRemote.getUrl());
+    String username = mRemote.getUsername();
+    String password = mRemote.getPassword();
+    String apikey = mRemote.getAPIKey();
+
+    if(username != null)
+      b.putString("username", username);
+    if(password != null)
+      b.putString("password", password);
+    if(apikey != null)
+      b.putString("apikey", apikey);
+    return b;
+  }
+
+  private String getCurrentMode() {
+    switch(adapter.getItemPosition(currentVisibleFragment)) {
+      case 0: // Queue
+        return "queue";
+      case 1: // History
+        return "history";
+      default:
+        return null;
+    }
+  }
 }

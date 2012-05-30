@@ -38,6 +38,17 @@ public class ViewRemotePagerAdapter extends FragmentPagerAdapter {
   }
 
   @Override
+  public int getItemPosition(Object object) {
+    Fragment target = (Fragment) object;
+    for(int i = 0, max = fragments.size(); i < max; i++) {
+      if(fragments.get(i).equals(target)) {
+        return i;
+      }
+    }
+    return 0;
+  }
+
+  @Override
   public int getCount() {
     return fragments.size();
   }

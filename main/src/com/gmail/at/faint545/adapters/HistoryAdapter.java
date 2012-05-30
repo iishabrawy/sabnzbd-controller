@@ -1,7 +1,5 @@
 package com.gmail.at.faint545.adapters;
 
-import java.util.ArrayList;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -13,13 +11,12 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.gmail.at.faint545.HistoryItem;
 import com.gmail.at.faint545.NzoItem;
 import com.gmail.at.faint545.R;
 import com.gmail.at.faint545.fragments.CheckChangedListener;
 import com.gmail.at.faint545.utils.SabConstants;
-import com.viewpagerindicator.R.drawable;
+import java.util.ArrayList;
 
 public class HistoryAdapter extends SabAdapter {
   private ArrayList<NzoItem> items;
@@ -75,10 +72,10 @@ public class HistoryAdapter extends SabAdapter {
     viewHolder = (ViewHolder) convertView.getTag();     
 
     if(isEven(position)) {
-      convertView.setBackgroundResource(drawable.listview_even_selector);
+      convertView.setBackgroundResource(R.drawable.listview_even_selector);
     }
     else {
-      convertView.setBackgroundResource(drawable.listview_odd_selector);
+      convertView.setBackgroundResource(R.drawable.listview_odd_selector);
     }
 
     convertView.findViewById(R.id.root).setPadding(10, 10, 10, 10);

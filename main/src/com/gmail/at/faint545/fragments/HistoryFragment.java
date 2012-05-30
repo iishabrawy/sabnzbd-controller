@@ -1,6 +1,5 @@
 package com.gmail.at.faint545.fragments;
 
-import java.util.ArrayList;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
@@ -17,6 +16,7 @@ import com.gmail.at.faint545.Remote;
 import com.gmail.at.faint545.activities.HistoryDetailsActivity;
 import com.gmail.at.faint545.adapters.HistoryAdapter;
 import com.gmail.at.faint545.adapters.SabAdapter;
+import java.util.ArrayList;
 
 public class HistoryFragment extends SabListFragment {
   public static final String EXTRA = "extra";

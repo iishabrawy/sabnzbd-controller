@@ -15,15 +15,12 @@
  */
 package com.gmail.at.faint545;
 
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
-import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class Remote implements Parcelable {
 
@@ -91,7 +88,7 @@ public class Remote implements Parcelable {
 	
 	public String getAPIKey() {
 		return mPreferences.get(APIKEY);		
-	}		
+	}
 
 	/**
 	 * Below here is for parcelable

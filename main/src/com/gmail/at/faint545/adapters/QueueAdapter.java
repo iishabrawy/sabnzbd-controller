@@ -1,21 +1,18 @@
 package com.gmail.at.faint545.adapters;
 
-import java.util.ArrayList;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-
 import com.gmail.at.faint545.NzoItem;
 import com.gmail.at.faint545.R;
 import com.gmail.at.faint545.fragments.CheckChangedListener;
 import com.gmail.at.faint545.fragments.QueueItem;
+import java.util.ArrayList;
 
 public class QueueAdapter extends SabAdapter {
   private ArrayList<NzoItem> items;
@@ -52,7 +49,7 @@ public class QueueAdapter extends SabAdapter {
   public View getView(final int position, View convertView, ViewGroup parent) {
     
     // Setup view(s).
-    Log.i(LOGTAG,"getView");
+
     ViewHolder viewHolder = null;
     if(convertView == null) {
       viewHolder = new ViewHolder();
