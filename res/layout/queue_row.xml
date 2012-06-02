@@ -3,7 +3,8 @@
     android:id="@+id/queue_row_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:minHeight="48dip">
 
     <com.gmail.at.faint545.views.IndependentCheckBox
         android:id="@+id/queue_row_checkbox"
