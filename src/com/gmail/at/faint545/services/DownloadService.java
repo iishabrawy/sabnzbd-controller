@@ -1,19 +1,29 @@
 package com.gmail.at.faint545.services;
 
-import android.app.Service;
-import android.content.Intent;
-import android.os.*;
-import com.gmail.at.faint545.services.SabTask.OnDownloadTaskFinished;
-import org.apache.http.client.methods.HttpPost;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import org.apache.http.client.methods.HttpPost;
+
+import android.app.Service;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
+
+import com.gmail.at.faint545.Remote;
+import com.gmail.at.faint545.services.SabTask.OnDownloadTaskFinished;
 
 public class DownloadService extends Service implements OnDownloadTaskFinished {
 
   private Messenger mMessenger;
   private List<Messenger> mClientList = new ArrayList<Messenger>();
   private boolean mIncomplete = false; // A flag to control how many times we should send a message if incomplete.
+  private Remote mRemote;
 
   public static final int UNREGISTER_CLIENT = -1;
   public static final int REGISTER_CLIENT = 1;
@@ -27,6 +37,7 @@ public class DownloadService extends Service implements OnDownloadTaskFinished {
   public static final int ACTION_SET_SPEEDLIMIT = 7;
 
   private static final String LOGTAG = "DownloadService";
+    
 
   public DownloadService() {
     super();
@@ -36,9 +47,9 @@ public class DownloadService extends Service implements OnDownloadTaskFinished {
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
-    Bundle extras = intent.getExtras();
-    HttpPost queuePost = SabPostFactory.getQueueInstance(extras);
-    HttpPost historyPost = SabPostFactory.getHistoryInstance(extras);
+    mRemote = intent.getExtras().getParcelable("remote");
+    HttpPost queuePost = SabPostFactory.getQueueInstance(mRemote);
+    HttpPost historyPost = SabPostFactory.getHistoryInstance(mRemote,0);
 
     new SabTask(this).execute(queuePost);
     new SabTask(this).execute(historyPost);
@@ -74,16 +85,19 @@ public class DownloadService extends Service implements OnDownloadTaskFinished {
   }
 
   @Override
-  public void onIncomplete() {
+  public void onIncomplete(String error) {
     if(!mIncomplete) {
       mIncomplete = true;
-      sendMessage("Could not connect to SABNzbd. Please check your settings.", FAILURE);
+      sendMessage(error, FAILURE);
     }
   }
 
   private class IncomingMessageHandler extends Handler {
     @Override
     public void handleMessage(Message msg) {
+      Bundle extraData = msg.getData();
+      String value = extraData.getString("value");
+      
       switch(msg.what) {
         case REGISTER_CLIENT:
           mClientList.add(msg.replyTo);
@@ -92,19 +106,19 @@ public class DownloadService extends Service implements OnDownloadTaskFinished {
           mClientList.remove(msg.replyTo);
           break;
         case ACTION_PAUSE:
-          HttpPost post = SabPostFactory.getPauseInstance(msg.getData());
+          HttpPost post = SabPostFactory.getPauseInstance(mRemote,value);
           new SabTask(DownloadService.this).execute(post);
           break;
         case ACTION_DELETE:
-          post = SabPostFactory.getDeleteInstance(msg.getData());
+          post = SabPostFactory.getDeleteInstance(mRemote,null,value);
           new SabTask(DownloadService.this).execute(post);
           break;
         case ACTION_RESUME:
-          post = SabPostFactory.getResumeInstance(msg.getData());
+          post = SabPostFactory.getResumeInstance(mRemote,null);
           new SabTask(DownloadService.this).execute(post);
           break;
         case ACTION_SET_SPEEDLIMIT:
-          post = SabPostFactory.getSpeedLimitInstance(msg.getData());
+          post = SabPostFactory.getSpeedLimitInstance(mRemote,value);
           new SabTask(DownloadService.this).execute(post);
           break;
       }

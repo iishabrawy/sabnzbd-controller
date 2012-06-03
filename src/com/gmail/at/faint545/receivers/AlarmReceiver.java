@@ -1,4 +1,4 @@
-package com.gmail.at.faint545.receiver;
+package com.gmail.at.faint545.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

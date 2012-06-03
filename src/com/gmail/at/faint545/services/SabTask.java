@@ -2,6 +2,8 @@ package com.gmail.at.faint545.services;
 
 import android.app.Service;
 import android.os.AsyncTask;
+
+import com.gmail.at.faint545.utils.ExceptionHandler;
 import com.gmail.at.faint545.utils.HttpResponseParser;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
@@ -17,7 +19,7 @@ public class SabTask extends AsyncTask<HttpPost, Void, String> {
 	
 	public interface OnDownloadTaskFinished {
 		public void onComplete(String results);
-		public void onIncomplete();
+		public void onIncomplete(String error);
 	}
 	
 	public SabTask(Service service) {
@@ -37,11 +39,11 @@ public class SabTask extends AsyncTask<HttpPost, Void, String> {
 		} 
 		catch (ClientProtocolException e) {
 			e.printStackTrace();
-			return null;
+			return ExceptionHandler.translate(e);
 		} 
 		catch (IOException e) {
 			e.printStackTrace();
-			return null;
+			return ExceptionHandler.translate(e);
 		}
 	}
 	
@@ -50,6 +52,6 @@ public class SabTask extends AsyncTask<HttpPost, Void, String> {
     if(result != null)
     	mCallback.onComplete(result);
     else
-    	mCallback.onIncomplete();
+    	mCallback.onIncomplete(result);
   }		
 }

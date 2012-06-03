@@ -11,7 +11,6 @@ import java.util.ArrayList;
 public abstract class SabListFragment extends SherlockListFragment {
 
   public abstract void updateItems(ArrayList<NzoItem> items);
-  public abstract SabAdapter getAdapter();
   public abstract void resetAdapter();
   public abstract void inflateActionModeMenu(ActionMode mode, Menu menu);
   public abstract Remote getRemote();
@@ -21,10 +20,16 @@ public abstract class SabListFragment extends SherlockListFragment {
    * @param value
    */
   public void setAllChecked(boolean value) {
-    getAdapter().setAllChecked(value);
+    getListAdapter().setAllChecked(value);
   }
 
   public String getCheckedIds() {
-    return getAdapter().getCheckedIds();
+    return getListAdapter().getCheckedIds();
   }
+ 
+  public SabFragmentActivity getSabActivity() {
+    return (SabFragmentActivity) getActivity();
+  }
+  
+  public abstract SabAdapter getListAdapter();
 }

@@ -1,5 +1,8 @@
 package com.gmail.at.faint545.adapters;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
@@ -11,12 +14,12 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.gmail.at.faint545.HistoryItem;
 import com.gmail.at.faint545.NzoItem;
 import com.gmail.at.faint545.R;
 import com.gmail.at.faint545.fragments.CheckChangedListener;
 import com.gmail.at.faint545.utils.SabConstants;
-import java.util.ArrayList;
 
 public class HistoryAdapter extends SabAdapter {
   private ArrayList<NzoItem> items;
@@ -107,7 +110,7 @@ public class HistoryAdapter extends SabAdapter {
       viewHolder.time.setText(item.getCompletedOn(HistoryItem.LENGTH_SHORT));
     }
 
-    if(!checkedPositions.isEmpty()) {
+    if(!checkedPositions.isEmpty() && position < checkedPositions.size()) {
       viewHolder.checkbox.setChecked(checkedPositions.get(position));
     }
 
@@ -165,5 +168,27 @@ public class HistoryAdapter extends SabAdapter {
     TextView name, size, time;
     ImageView status;
     CheckBox checkbox;
+  }
+
+  @Override
+  public void add(NzoItem item) {
+    items.add(item);
+    checkedPositions.add(false);
+    notifyDataSetChanged();
+  }
+
+  @Override
+  public void addAll(List<NzoItem> items) {
+    this.items.addAll(items);
+    for(int i = 0, max = items.size(); i < max; i++) {
+      checkedPositions.add(false);
+    }
+    notifyDataSetChanged();    
+  }
+
+  @Override
+  public void clearData() {
+    items.clear();
+    checkedPositions.clear();
   }
 }

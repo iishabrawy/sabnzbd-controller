@@ -8,6 +8,7 @@ import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
 import android.text.InputType;
 import android.text.method.PasswordTransformationMethod;
+import android.text.method.SingleLineTransformationMethod;
 import android.view.View;
 import android.widget.Toast;
 
@@ -53,10 +54,12 @@ public class UpdateRemoteActivity extends SherlockPreferenceActivity implements 
 		mNicknamePref = (EditTextPreference) findPreference("nickname");
 		mNicknamePref.setOnPreferenceChangeListener(this);
 		mNicknamePref.setText(mRemote.getPreference(Remote.NICKNAME));
+		mNicknamePref.getEditText().setTransformationMethod(new SingleLineTransformationMethod());
 
 		mHostPref = (EditTextPreference) findPreference("host");
 		mHostPref.setOnPreferenceChangeListener(this);
 		mHostPref.setText(mRemote.getPreference(Remote.HOST));
+		mHostPref.getEditText().setTransformationMethod(new SingleLineTransformationMethod());
 
 		mPortPref = (EditTextPreference) findPreference("port");
 		mPortPref.setOnPreferenceChangeListener(this);	
@@ -85,11 +88,13 @@ public class UpdateRemoteActivity extends SherlockPreferenceActivity implements 
 		mUsernamePref = (EditTextPreference) findPreference("username");
 		mUsernamePref.setOnPreferenceChangeListener(this);
 		mUsernamePref.setText(mRemote.getPreference(Remote.USERNAME));
+		mUsernamePref.getEditText().setTransformationMethod(new SingleLineTransformationMethod());
 
 		mPasswordPref = (EditTextPreference) findPreference("password");
 		mPasswordPref.setOnPreferenceChangeListener(this);
 		mPasswordPref.getEditText().setTransformationMethod(new PasswordTransformationMethod());
 		mPasswordPref.setText(mRemote.getPreference(Remote.PASSWORD));
+		mPasswordPref.getEditText().setTransformationMethod(new SingleLineTransformationMethod());
 	}
 
 	@Override

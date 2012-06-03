@@ -1,13 +1,15 @@
 package com.gmail.at.faint545.services;
 
-import android.os.Bundle;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
+
+import com.gmail.at.faint545.Remote;
 
 public class SabPostFactory {
 
@@ -16,11 +18,11 @@ public class SabPostFactory {
 	 * user specified arguments.
 	 * @param message
 	 */
-	public static HttpPost getQueueInstance(Bundle message) {
-		HttpPost post = new HttpPost(message.getString("url")+"/api?");
+	public static HttpPost getQueueInstance(Remote remote) {
+		HttpPost post = new HttpPost(remote.getUrl()+"/api?");
 
 		try {
-			List<NameValuePair> parameters = buildBaseParams(message);
+			List<NameValuePair> parameters = buildBaseParams(remote);
 			parameters.add(new BasicNameValuePair("mode", "queue"));
 			post.setEntity(new UrlEncodedFormEntity(parameters));
 		}
@@ -32,12 +34,13 @@ public class SabPostFactory {
 
 	}
 
-	public static HttpPost getHistoryInstance(Bundle message) {
-		HttpPost post = new HttpPost(message.getString("url")+"/api?");
+	public static HttpPost getHistoryInstance(Remote remote,int offset) {
+	  HttpPost post = new HttpPost(remote.getUrl()+"/api?");
 
 		try {
-			List<NameValuePair> parameters = buildBaseParams(message);
+			List<NameValuePair> parameters = buildBaseParams(remote);
 			parameters.add(new BasicNameValuePair("mode", "history"));
+			parameters.add(new BasicNameValuePair("start", String.valueOf(offset)));
 			post.setEntity(new UrlEncodedFormEntity(parameters));
 		}
 		catch(UnsupportedEncodingException e) {
@@ -47,14 +50,14 @@ public class SabPostFactory {
 		return post;
 	}
 
-  public static HttpPost getPauseInstance(Bundle extras) {
-    HttpPost post = new HttpPost(extras.getString("url")+"/api?");
+  public static HttpPost getPauseInstance(Remote remote, String value) {
+    HttpPost post = new HttpPost(remote.getUrl()+"/api?");
 
     try {
-      List<NameValuePair> parameters = buildBaseParams(extras);
+      List<NameValuePair> parameters = buildBaseParams(remote);
       parameters.add(new BasicNameValuePair("mode", "queue"));
       parameters.add(new BasicNameValuePair("name", "pause"));
-      parameters.add(new BasicNameValuePair("value", extras.getString("value")));
+      parameters.add(new BasicNameValuePair("value", value));
       post.setEntity(new UrlEncodedFormEntity(parameters));
     }
     catch(UnsupportedEncodingException e) {
@@ -64,14 +67,14 @@ public class SabPostFactory {
     return post;
   }
 
-  public static HttpPost getResumeInstance(Bundle extras) {
-    HttpPost post = new HttpPost(extras.getString("url")+"/api?");
+  public static HttpPost getResumeInstance(Remote remote, String value) {
+    HttpPost post = new HttpPost(remote.getUrl()+"/api?");
 
     try {
-      List<NameValuePair> parameters = buildBaseParams(extras);
+      List<NameValuePair> parameters = buildBaseParams(remote);
       parameters.add(new BasicNameValuePair("mode", "queue"));
       parameters.add(new BasicNameValuePair("name", "resume"));
-      parameters.add(new BasicNameValuePair("value", extras.getString("value")));
+      parameters.add(new BasicNameValuePair("value", value));
       post.setEntity(new UrlEncodedFormEntity(parameters));
     }
     catch(UnsupportedEncodingException e) {
@@ -92,14 +95,14 @@ public class SabPostFactory {
    * @param message User specified arguments.
    * @return An HttpPost that is executable by an HttpClient.
    */
-  public static HttpPost getDeleteInstance(Bundle message) {
-    HttpPost post = new HttpPost(message.getString("url")+"/api?");
+  public static HttpPost getDeleteInstance(Remote remote,String mode,String value) {
+    HttpPost post = new HttpPost(remote.getUrl()+"/api?");
 
     try {
-      List<NameValuePair> parameters = buildBaseParams(message);
+      List<NameValuePair> parameters = buildBaseParams(remote);
       parameters.add(new BasicNameValuePair("name", "delete"));
-      parameters.add(new BasicNameValuePair("mode",message.getString("mode")));
-      parameters.add(new BasicNameValuePair("value", message.getString("value")));
+      parameters.add(new BasicNameValuePair("mode", mode));
+      parameters.add(new BasicNameValuePair("value", value));
       post.setEntity(new UrlEncodedFormEntity(parameters));
     }
     catch(UnsupportedEncodingException e) {
@@ -109,14 +112,14 @@ public class SabPostFactory {
     return post;
   }
 
-  public static HttpPost getSpeedLimitInstance(Bundle message) {
-    HttpPost post = new HttpPost(message.getString("url")+"/api?");
+  public static HttpPost getSpeedLimitInstance(Remote remote, String value) {
+    HttpPost post = new HttpPost(remote.getUrl()+"/api?");
 
     try {
-      List<NameValuePair> parameters = buildBaseParams(message);
+      List<NameValuePair> parameters = buildBaseParams(remote);
       parameters.add(new BasicNameValuePair("name", "speedlimit"));
       parameters.add(new BasicNameValuePair("mode","config"));
-      parameters.add(new BasicNameValuePair("value", message.getString("value")));
+      parameters.add(new BasicNameValuePair("value", value));
       post.setEntity(new UrlEncodedFormEntity(parameters));
     }
     catch(UnsupportedEncodingException e) {
@@ -132,12 +135,13 @@ public class SabPostFactory {
    * @param message
    * @return A list of NameValuePairs.
    */
-  private static List<NameValuePair> buildBaseParams(Bundle message) {
+  private static List<NameValuePair> buildBaseParams(Remote remote) {
     List<NameValuePair> parameters = new ArrayList<NameValuePair>();
     parameters.add(new BasicNameValuePair("output", "json"));
-    parameters.add(new BasicNameValuePair("apikey", message.getString("apikey")));
-    parameters.add(new BasicNameValuePair("username", message.getString("username")));
-    parameters.add(new BasicNameValuePair("password", message.getString("password")));
+    parameters.add(new BasicNameValuePair("apikey", remote.getAPIKey()));
+    parameters.add(new BasicNameValuePair("username", remote.getUsername()));
+    parameters.add(new BasicNameValuePair("password", remote.getPassword()));
+    parameters.add(new BasicNameValuePair("limit", "10"));
     return parameters;
   }
 }

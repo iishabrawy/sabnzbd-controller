@@ -11,6 +11,7 @@
     <string name="queue_empty">Your queue is empty.\nYou may want to refresh.</string>
     <string name="history_empty">Your history is clean.\nNo one will ever know…</string>
     <string name="status_empty">Coming soon…</string>
+    <string name="remote_empty">Press the add button\nto create a remote.</string>
 
     <!-- Titles for Fragments -->
     <string-array name="title_array">
@@ -46,6 +47,7 @@
     <string name="category">Category:</string>
 
     <!-- Loading messages -->
+    <string name="loading_endless">Loading…</string>
     <string name="loading">Loading from SABNzbd…</string>
     <string name="removing">Removing selected items…</string>
     <string name="pausing">Pausing selected items…</string>

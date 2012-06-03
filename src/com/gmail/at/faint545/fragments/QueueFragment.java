@@ -71,7 +71,7 @@ public class QueueFragment extends SabListFragment {
   }
 
   @Override
-  public SabAdapter getAdapter() {
+  public SabAdapter getListAdapter() {
     return listAdapter;
   }
   

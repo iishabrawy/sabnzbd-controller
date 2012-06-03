@@ -13,6 +13,7 @@ import com.gmail.at.faint545.R;
 import com.gmail.at.faint545.fragments.CheckChangedListener;
 import com.gmail.at.faint545.fragments.QueueItem;
 import java.util.ArrayList;
+import java.util.List;
 
 public class QueueAdapter extends SabAdapter {
   private ArrayList<NzoItem> items;
@@ -140,5 +141,23 @@ public class QueueAdapter extends SabAdapter {
     TextView filename, timeleft;
     ProgressBar progress;
     CheckBox checkbox;
+  }
+
+
+  @Override
+  public void add(NzoItem item) {
+    items.add(item);
+  }
+
+  @Override
+  public void addAll(List<NzoItem> items) {
+    // TODO Auto-generated method stub
+    
+  }
+
+  @Override
+  public void clearData() {
+    // TODO Auto-generated method stub
+    
   }
 }

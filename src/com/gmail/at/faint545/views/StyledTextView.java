@@ -12,7 +12,7 @@ import com.gmail.at.faint545.R.styleable;
 public class StyledTextView extends TextView {
   // For debugging
   private static final String LOGTAG = StyledTextView.class.getSimpleName();
-  
+
   private static final Hashtable<String,Typeface> fontCache = new Hashtable<String, Typeface>();
 
   public StyledTextView(Context context, AttributeSet attrs, int defStyle) {
@@ -28,14 +28,16 @@ public class StyledTextView extends TextView {
   public StyledTextView(Context context) {
     super(context);
   }
-  
+
   private void setCustomFontFace(Context context, AttributeSet attrs) {
-    TypedArray attrArray = context.obtainStyledAttributes(attrs, styleable.StyledTextView);
-    String fontFace = attrArray.getString(styleable.StyledTextView_fontface);
-    Typeface typeFace = get(context, fontFace);
-    setTypeface(typeFace);
+    if(!isInEditMode()) {
+      TypedArray attrArray = context.obtainStyledAttributes(attrs, styleable.StyledTextView);
+      String fontFace = attrArray.getString(styleable.StyledTextView_fontface);
+      Typeface typeFace = get(context, fontFace);
+      setTypeface(typeFace);
+    }
   }
-  
+
   /*
    * We cache fonts here to avoid some memory leaks.
    * See http://code.google.com/p/android/issues/detail?id=9904

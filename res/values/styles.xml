@@ -64,5 +64,11 @@
     <style name="TextView.Subtitle">
         <item name="android:textAppearance">@android:style/TextAppearance.Small</item>
     </style>
+    
+    <!-- Style for empty messages  -->
+    <style name="TextView.Empty">
+        <item name="android:textAppearance">@android:style/TextAppearance.Large</item>
+        <item name="android:textColor">#66000000</item>
+    </style>
 
 </resources>
