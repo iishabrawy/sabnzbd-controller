@@ -97,6 +97,7 @@ public class DownloadService extends Service implements OnDownloadTaskFinished {
     public void handleMessage(Message msg) {
       Bundle extraData = msg.getData();
       String value = extraData.getString("value");
+      mRemote = extraData.getParcelable("remote");
       
       switch(msg.what) {
         case REGISTER_CLIENT:
@@ -110,11 +111,12 @@ public class DownloadService extends Service implements OnDownloadTaskFinished {
           new SabTask(DownloadService.this).execute(post);
           break;
         case ACTION_DELETE:
-          post = SabPostFactory.getDeleteInstance(mRemote,null,value);
+          String mode = extraData.getString("mode");
+          post = SabPostFactory.getDeleteInstance(mRemote,mode,value);
           new SabTask(DownloadService.this).execute(post);
           break;
-        case ACTION_RESUME:
-          post = SabPostFactory.getResumeInstance(mRemote,null);
+        case ACTION_RESUME:          
+          post = SabPostFactory.getResumeInstance(mRemote,value);
           new SabTask(DownloadService.this).execute(post);
           break;
         case ACTION_SET_SPEEDLIMIT:
