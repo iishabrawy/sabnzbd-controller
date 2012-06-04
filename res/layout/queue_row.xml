@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:minHeight="48dip">
+    android:minHeight="@dimen/listview_row_min_height">
 
     <com.gmail.at.faint545.views.IndependentCheckBox
         android:id="@+id/queue_row_checkbox"
