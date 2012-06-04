@@ -347,6 +347,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
         // Send the message
         sendMessageToService(data, DownloadService.ACTION_DELETE);
         Toast.makeText(getApplicationContext(),R.string.removing,Toast.LENGTH_SHORT).show();
+        mActionMode.finish();
         break;
       case R.id.select_all:
         currentVisibleFragment.setAllChecked(true);
@@ -359,6 +360,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
         // Send the message
         sendMessageToService(data, DownloadService.ACTION_PAUSE);
         Toast.makeText(getApplicationContext(),R.string.pausing,Toast.LENGTH_SHORT).show();
+        mActionMode.finish();
         break;
       case R.id.resume:
         // Get the ids that have been checked
@@ -368,10 +370,9 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
         // Send the message
         sendMessageToService(data, DownloadService.ACTION_RESUME);
         Toast.makeText(getApplicationContext(),R.string.resuming,Toast.LENGTH_SHORT).show();
+        mActionMode.finish();
         break;
-      }
-
-      mActionMode.finish();
+      }      
       return true;
     }
   };
