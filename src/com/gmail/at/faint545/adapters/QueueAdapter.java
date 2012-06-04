@@ -147,17 +147,20 @@ public class QueueAdapter extends SabAdapter {
   @Override
   public void add(NzoItem item) {
     items.add(item);
+    checkedPositions.add(false);
   }
 
   @Override
   public void addAll(List<NzoItem> items) {
-    // TODO Auto-generated method stub
-    
+  	this.items.addAll(items);
+    for(int i = 0, max = items.size(); i < max; i++) {
+      checkedPositions.add(false);
+    }    
   }
 
   @Override
   public void clearData() {
-    // TODO Auto-generated method stub
-    
+  	items.clear();
+  	checkedPositions.clear();
   }
 }

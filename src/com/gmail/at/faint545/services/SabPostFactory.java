@@ -18,12 +18,13 @@ public class SabPostFactory {
 	 * user specified arguments.
 	 * @param message
 	 */
-	public static HttpPost getQueueInstance(Remote remote) {
+	public static HttpPost getQueueInstance(Remote remote,int offset) {
 		HttpPost post = new HttpPost(remote.getUrl()+"/api?");
 
 		try {
 			List<NameValuePair> parameters = buildBaseParams(remote);
 			parameters.add(new BasicNameValuePair("mode", "queue"));
+			parameters.add(new BasicNameValuePair("start", String.valueOf(offset)));
 			post.setEntity(new UrlEncodedFormEntity(parameters));
 		}
 		catch(UnsupportedEncodingException e) {

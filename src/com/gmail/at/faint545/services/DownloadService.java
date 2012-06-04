@@ -48,7 +48,7 @@ public class DownloadService extends Service implements OnDownloadTaskFinished {
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
     mRemote = intent.getExtras().getParcelable("remote");
-    HttpPost queuePost = SabPostFactory.getQueueInstance(mRemote);
+    HttpPost queuePost = SabPostFactory.getQueueInstance(mRemote,0);
     HttpPost historyPost = SabPostFactory.getHistoryInstance(mRemote,0);
 
     new SabTask(this).execute(queuePost);

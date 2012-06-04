@@ -90,7 +90,6 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
   @Override
   protected void onStart() {
     bindToService();
-    // downloadData(ALL);
     super.onStart();
   }
 

@@ -50,8 +50,6 @@ public class HistoryFragment extends SabListFragment {
   // Request code to view history details.
   public static final int VIEW = R.id.view__history_details >> 17;
 
-  private int mEndlessAdapterOffset = 0;
-
   private HistoryFragment() {}
 
   public static HistoryFragment getInstance(Remote remote) {    
@@ -90,8 +88,7 @@ public class HistoryFragment extends SabListFragment {
   @Override
   public void updateItems(ArrayList<NzoItem> items) {
     getListAdapter().clearData();
-    mEndlessAdapterOffset = 0; // Reset the offset back to zero.
-    mEndlessListAdapter.keepOnAppending.set(true);
+    mEndlessListAdapter.reset();
     // Re-create checked positions when new data
     // arrives.
     checkedPositions.clear();
@@ -132,10 +129,17 @@ public class HistoryFragment extends SabListFragment {
     return getArguments().getParcelable(EXTRA);
   }
 
-  public class HistoryEndlessAdapter extends EndlessAdapter {
+  @Override
+  public SabAdapter getListAdapter() {    
+    return (SabAdapter) mEndlessListAdapter.getWrappedAdapter();
+  }
+
+	private class HistoryEndlessAdapter extends EndlessAdapter {
 
     private static final String LOGTAG = "HistoryEndlessAdapter";
-    private List<NzoItem> historyCache = new ArrayList<NzoItem>();
+    private List<NzoItem> cache = new ArrayList<NzoItem>();
+    
+    private int mOffset = 0;
 
     public HistoryEndlessAdapter(Context context, ListAdapter wrapped,
         int pendingResource) {
@@ -150,11 +154,11 @@ public class HistoryFragment extends SabListFragment {
     protected boolean cacheInBackground() throws Exception {
       // Execute the request.      
       HttpClient client = new DefaultHttpClient();
-      HttpPost post = SabPostFactory.getHistoryInstance(getRemote(),mEndlessAdapterOffset);
+      HttpPost post = SabPostFactory.getHistoryInstance(getRemote(),mOffset);
 
       // We add 11 because we only show 10 items at a time, and next time,
       // we want to to begin loading from +1 where we left off. 
-      mEndlessAdapterOffset += 11; 
+      mOffset += 11; 
 
       // Get the response/result.
       HttpResponse response = client.execute(post);
@@ -164,24 +168,24 @@ public class HistoryFragment extends SabListFragment {
       JSONArray slots = object.getJSONObject("history").getJSONArray("slots");
 
       for(int i = 0, max = slots.length(); i < max; i++) {
-        historyCache.add(new HistoryItem().buildFromJson(slots.getJSONObject(i)));
+        cache.add(new HistoryItem().buildFromJson(slots.getJSONObject(i)));
       }
-      return historyCache.size() > 0;
+      return cache.size() > 0;
     }
 
     @Override
     protected void appendCachedData() {
       SabAdapter adapter = (SabAdapter) getWrappedAdapter();
-      for(NzoItem item : historyCache) {
+      for(NzoItem item : cache) {
         adapter.add(item);
       }
-      historyCache.clear();
+      cache.clear();
       adapter.notifyDataSetChanged();
     }
-  }
-
-  @Override
-  public SabAdapter getListAdapter() {    
-    return (SabAdapter) mEndlessListAdapter.getWrappedAdapter();
+    
+    public void reset() {
+    	mOffset = 0;
+    	super.reset();
+    }    
   }
 }
