@@ -1,4 +1,4 @@
-package com.gmail.at.faint545.fragments;
+package com.gmail.at.faint545.nzo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -6,7 +6,6 @@ import org.json.JSONObject;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.gmail.at.faint545.NzoItem;
 import com.gmail.at.faint545.utils.SabConstants;
 
 public class QueueItem extends NzoItem {

@@ -1,4 +1,4 @@
-package com.gmail.at.faint545;
+package com.gmail.at.faint545.nzo;
 
 import org.json.JSONException;
 import org.json.JSONObject;
