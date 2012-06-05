@@ -25,14 +25,25 @@ public class RemoteTable {
   public static final int INDEX_USERNAME = 6;
   public static final int INDEX_PASSWORD = 7;
   
-  public static final String CREATE = "CREATE TABLE " + NAME + " (" +
-  		COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-      COL_NICK + " TEXT NOT NULL, " + 
-      COL_HOST + " TEXT NOT NULL, " +
-      COL_PORT + " TEXT NOT NULL, " +
-      COL_RINTERVAL + " INTEGER DEFAULT -1, " +
-      COL_API + " TEXT, " +
-      COL_USERNAME + " TEXT, " +
-      COL_PASSWORD + " TEXT);";
+//  public static final String CREATE = "CREATE TABLE " + NAME + " (" +
+//  		COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+//      COL_NICK + " TEXT NOT NULL, " + 
+//      COL_HOST + " TEXT NOT NULL, " +
+//      COL_PORT + " TEXT NOT NULL, " +
+//      COL_RINTERVAL + " INTEGER DEFAULT -1, " +
+//      COL_API + " TEXT, " +
+//      COL_USERNAME + " TEXT, " +
+//      COL_PASSWORD + " TEXT);";
+  
+  public static final String CREATE = new StringBuilder()
+    .append("CREATE TABLE ").append(NAME).append(" (")
+    .append(COL_ID).append(" INTEGER PRIMARY KEY AUTOINCREMENT, ")
+    .append(COL_NICK).append(" TEXT NOT NULL, ")
+    .append(COL_HOST).append(" TEXT NOT NULL, ")
+    .append(COL_PORT).append(" TEXT NOT NULL, ")
+    .append(COL_RINTERVAL).append(" INTEGER DEFAULT 0, ")
+    .append(COL_API).append(" TEXT, ")
+    .append(COL_USERNAME).append(" TEXT, ")
+    .append(COL_PASSWORD).append(" TEXT);").toString();  
 
 }
