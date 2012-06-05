@@ -1,4 +1,4 @@
-package com.gmail.at.faint545.utils;
+package com.gmail.at.faint545.views;
 
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
