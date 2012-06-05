@@ -8,10 +8,11 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import com.gmail.at.faint545.NzoItem;
 import com.gmail.at.faint545.R;
 import com.gmail.at.faint545.fragments.CheckChangedListener;
-import com.gmail.at.faint545.fragments.QueueItem;
+import com.gmail.at.faint545.nzo.NzoItem;
+import com.gmail.at.faint545.nzo.QueueItem;
+
 import java.util.ArrayList;
 import java.util.List;
 

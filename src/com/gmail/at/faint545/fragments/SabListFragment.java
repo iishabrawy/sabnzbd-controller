@@ -3,9 +3,10 @@ package com.gmail.at.faint545.fragments;
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
-import com.gmail.at.faint545.NzoItem;
 import com.gmail.at.faint545.Remote;
 import com.gmail.at.faint545.adapters.SabAdapter;
+import com.gmail.at.faint545.nzo.NzoItem;
+
 import java.util.ArrayList;
 
 public abstract class SabListFragment extends SherlockListFragment {

@@ -4,7 +4,7 @@ import java.util.List;
 
 import android.widget.BaseAdapter;
 
-import com.gmail.at.faint545.NzoItem;
+import com.gmail.at.faint545.nzo.NzoItem;
 
 public abstract class SabAdapter extends BaseAdapter {
   public boolean isEven(int position) {

@@ -18,14 +18,15 @@ import android.widget.Toast;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.gmail.at.faint545.HistoryItem;
-import com.gmail.at.faint545.NzoItem;
 import com.gmail.at.faint545.R;
 import com.gmail.at.faint545.Remote;
 import com.gmail.at.faint545.activities.RemoteMessageHandler.RemoteMessageListener;
 import com.gmail.at.faint545.adapters.ViewRemotePagerAdapter;
 import com.gmail.at.faint545.factories.AlertDialogFactory;
 import com.gmail.at.faint545.fragments.*;
+import com.gmail.at.faint545.nzo.HistoryItem;
+import com.gmail.at.faint545.nzo.NzoItem;
+import com.gmail.at.faint545.nzo.QueueItem;
 import com.gmail.at.faint545.receivers.AlarmReceiver;
 import com.gmail.at.faint545.services.DownloadService;
 import com.gmail.at.faint545.utils.InputDialogBuilder;
@@ -82,8 +83,6 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
     setContentView(R.layout.view_remote);
     setupActionBar();    
     setupPager();
-    errorDialog = AlertDialogFactory.getErrorInstance(this);
-    progressDialog = AlertDialogFactory.getProgressInstance(this);
     // showDialog(progressDialog, getString(R.string.loading));
   }
 
@@ -618,5 +617,17 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
   @Override
   public void downloadQueue() {
     downloadData(QUEUE);
+  }
+
+  @Override
+  public void showErrorDialog(CharSequence message) {
+    if(errorDialog == null) {
+      errorDialog = AlertDialogFactory.getErrorInstance(this);
+    }
+    
+    if(!errorDialog.isShowing()) {
+      errorDialog.setMessage(message);
+      errorDialog.show();
+    }
   }
 }

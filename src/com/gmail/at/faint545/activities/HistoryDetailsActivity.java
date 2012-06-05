@@ -14,8 +14,8 @@ import android.widget.TextView;
 
 import com.actionbarsherlock.app.SherlockListActivity;
 import com.actionbarsherlock.view.MenuItem;
-import com.gmail.at.faint545.HistoryItem;
 import com.gmail.at.faint545.R;
+import com.gmail.at.faint545.nzo.HistoryItem;
 import com.gmail.at.faint545.utils.SabConstants;
 import com.viewpagerindicator.R.drawable;
 
