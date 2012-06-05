@@ -200,7 +200,8 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
       builder.setOkButton(R.string.ok, new InputDialogBuilder.OnClickListener() {        
         @Override
         public void onClick(String result, DialogInterface dialog) {
-          Bundle b = buildBaseMessage();
+          Bundle b = new Bundle();
+          b.putParcelable("remote", mRemote);
           b.putString("value",result);
           sendMessageToService(b, DownloadService.ACTION_SET_SPEEDLIMIT);
           Toast.makeText(getApplicationContext(),R.string.setting_speed_limit,Toast.LENGTH_SHORT).show();
