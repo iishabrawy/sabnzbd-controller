@@ -9,7 +9,7 @@ import android.widget.CheckBox;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import com.gmail.at.faint545.R;
-import com.gmail.at.faint545.fragments.CheckChangedListener;
+import com.gmail.at.faint545.interfaces.CheckChangedListener;
 import com.gmail.at.faint545.nzo.NzoItem;
 import com.gmail.at.faint545.nzo.QueueItem;
 

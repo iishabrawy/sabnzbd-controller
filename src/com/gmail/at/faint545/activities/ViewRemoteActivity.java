@@ -24,12 +24,13 @@ import com.gmail.at.faint545.activities.RemoteMessageHandler.RemoteMessageListen
 import com.gmail.at.faint545.adapters.ViewRemotePagerAdapter;
 import com.gmail.at.faint545.factories.AlertDialogFactory;
 import com.gmail.at.faint545.fragments.*;
+import com.gmail.at.faint545.interfaces.CheckChangedListener;
 import com.gmail.at.faint545.nzo.HistoryItem;
 import com.gmail.at.faint545.nzo.NzoItem;
 import com.gmail.at.faint545.nzo.QueueItem;
 import com.gmail.at.faint545.receivers.AlarmReceiver;
 import com.gmail.at.faint545.services.DownloadService;
-import com.gmail.at.faint545.utils.InputDialogBuilder;
+import com.gmail.at.faint545.views.InputDialogBuilder;
 import com.gmail.at.faint545.views.ProgressDialog;
 import com.viewpagerindicator.TitlePageIndicator;
 import org.json.JSONArray;

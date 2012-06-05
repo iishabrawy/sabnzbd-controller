@@ -17,7 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.gmail.at.faint545.R;
-import com.gmail.at.faint545.fragments.CheckChangedListener;
+import com.gmail.at.faint545.interfaces.CheckChangedListener;
 import com.gmail.at.faint545.nzo.HistoryItem;
 import com.gmail.at.faint545.nzo.NzoItem;
 import com.gmail.at.faint545.utils.SabConstants;
