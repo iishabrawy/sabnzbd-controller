@@ -1,13 +1,16 @@
 package com.gmail.at.faint545.fragments;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -23,15 +26,15 @@ import android.widget.ListView;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.commonsware.cwac.endless.EndlessAdapter;
-import com.gmail.at.faint545.HistoryItem;
-import com.gmail.at.faint545.NzoItem;
 import com.gmail.at.faint545.R;
 import com.gmail.at.faint545.R.layout;
 import com.gmail.at.faint545.Remote;
 import com.gmail.at.faint545.activities.HistoryDetailsActivity;
 import com.gmail.at.faint545.adapters.HistoryAdapter;
 import com.gmail.at.faint545.adapters.SabAdapter;
-import com.gmail.at.faint545.services.SabPostFactory;
+import com.gmail.at.faint545.factories.SabPostFactory;
+import com.gmail.at.faint545.nzo.HistoryItem;
+import com.gmail.at.faint545.nzo.NzoItem;
 import com.gmail.at.faint545.utils.HttpResponseParser;
 
 public class HistoryFragment extends SabListFragment {
@@ -86,7 +89,7 @@ public class HistoryFragment extends SabListFragment {
   }
 
   @Override
-  public void updateItems(ArrayList<NzoItem> items) {
+  public void updateItems(List<NzoItem> items) {
     getListAdapter().clearData();
     mEndlessListAdapter.reset();
     // Re-create checked positions when new data
@@ -134,11 +137,11 @@ public class HistoryFragment extends SabListFragment {
     return (SabAdapter) mEndlessListAdapter.getWrappedAdapter();
   }
 
-	private class HistoryEndlessAdapter extends EndlessAdapter {
+  private class HistoryEndlessAdapter extends EndlessAdapter {
 
     private static final String LOGTAG = "HistoryEndlessAdapter";
     private List<NzoItem> cache = new ArrayList<NzoItem>();
-    
+
     private int mOffset = 0;
 
     public HistoryEndlessAdapter(Context context, ListAdapter wrapped,
@@ -151,7 +154,7 @@ public class HistoryFragment extends SabListFragment {
     }
 
     @Override
-    protected boolean cacheInBackground() throws Exception {
+    protected boolean cacheInBackground() {
       // Execute the request.      
       HttpClient client = new DefaultHttpClient();
       HttpPost post = SabPostFactory.getHistoryInstance(getRemote(),mOffset);
@@ -160,17 +163,30 @@ public class HistoryFragment extends SabListFragment {
       // we want to to begin loading from +1 where we left off. 
       mOffset += 11; 
 
-      // Get the response/result.
-      HttpResponse response = client.execute(post);
-      String result = HttpResponseParser.parseResponse(response);
+      try {
+        // Get the response/result.
+        HttpResponse response = client.execute(post);
+        String result = HttpResponseParser.parseResponse(response);
 
-      JSONObject object = new JSONObject(result);
-      JSONArray slots = object.getJSONObject("history").getJSONArray("slots");
+        JSONObject object = new JSONObject(result);
+        JSONArray slots = object.getJSONObject("history").getJSONArray("slots");
 
-      for(int i = 0, max = slots.length(); i < max; i++) {
-        cache.add(new HistoryItem().buildFromJson(slots.getJSONObject(i)));
+        for(int i = 0, max = slots.length(); i < max; i++) {
+          cache.add(new HistoryItem().buildFromJson(slots.getJSONObject(i)));
+        }
+        return cache.size() > 0;
       }
-      return cache.size() > 0;
+      catch(JSONException e) {        
+        e.printStackTrace();
+      } 
+      catch (ClientProtocolException e) {        
+        e.printStackTrace();
+      }
+      catch (IOException e) {
+        // getSabActivity().showErrorDialog("Connection failed.");
+        e.printStackTrace();
+      }
+      return false;
     }
 
     @Override
@@ -182,10 +198,10 @@ public class HistoryFragment extends SabListFragment {
       cache.clear();
       adapter.notifyDataSetChanged();
     }
-    
+
     public void reset() {
-    	mOffset = 0;
-    	super.reset();
+      mOffset = 0;
+      super.reset();
     }    
   }
 }

@@ -1,10 +1,22 @@
 package com.gmail.at.faint545.activities;
 
+import java.util.Calendar;
+import java.util.List;
+
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.*;
-import android.os.*;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.InputType;
@@ -15,39 +27,36 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
 import com.gmail.at.faint545.R;
 import com.gmail.at.faint545.Remote;
-import com.gmail.at.faint545.activities.RemoteMessageHandler.RemoteMessageListener;
 import com.gmail.at.faint545.adapters.ViewRemotePagerAdapter;
+import com.gmail.at.faint545.connectors.RequestHandler.Request;
 import com.gmail.at.faint545.factories.AlertDialogFactory;
-import com.gmail.at.faint545.fragments.*;
+import com.gmail.at.faint545.fragments.HistoryFragment;
+import com.gmail.at.faint545.fragments.QueueFragment;
+import com.gmail.at.faint545.fragments.SabListFragment;
+import com.gmail.at.faint545.fragments.StatusFragment;
 import com.gmail.at.faint545.interfaces.CheckChangedListener;
-import com.gmail.at.faint545.nzo.HistoryItem;
 import com.gmail.at.faint545.nzo.NzoItem;
-import com.gmail.at.faint545.nzo.QueueItem;
 import com.gmail.at.faint545.receivers.AlarmReceiver;
-import com.gmail.at.faint545.services.DownloadService;
+import com.gmail.at.faint545.services.RequestReceiver;
 import com.gmail.at.faint545.views.InputDialogBuilder;
 import com.gmail.at.faint545.views.ProgressDialog;
 import com.viewpagerindicator.TitlePageIndicator;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-import java.util.ArrayList;
-import java.util.Calendar;
 
-public class ViewRemoteActivity extends SabFragmentActivity implements CheckChangedListener, ServiceConnection, RemoteMessageListener {
+public class ViewRemoteActivity extends SabFragmentActivity implements CheckChangedListener, ServiceConnection {
 
   public static final String EXTRA = "extra";
 
   private ViewRemotePagerAdapter adapter;
   private ViewPager viewPager;
   private TitlePageIndicator pageIndicator;
-  private QueueFragment queueFragment;
-  private HistoryFragment historyFragment;
+  private QueueFragment mQueueFragment;
+  private HistoryFragment mHistoryFragment;
   private StatusFragment statusFragment;
   private Remote mRemote;
 
@@ -69,12 +78,12 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
   private PendingIntent mRecurringDownload;
   private ActionMode mActionMode;
 
-  private Messenger mMessenger = new Messenger(new RemoteMessageHandler(this));
+  private Messenger mMessenger = new Messenger(new IncomingHandler());
   private boolean mIsBoundToService = false; // Bound to a Service?
   private Messenger mServiceMessenger = null;
-  
-  public static final int QUEUE = 0, HISTORY = 1, ALL = 10;
-  
+
+  public static final int QUEUE = 0, HISTORY = 1, STATUS = 2, ALL = 10;
+
   public static final String LOGTAG = "ViewRemoteActivity";
 
   @Override
@@ -97,7 +106,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
     Intent targetIntent = new Intent();
     targetIntent.putExtras(buildBaseMessage());
     targetIntent.setFlags(flags);
-    
+
     if(mRemote.hasRefreshInterval()) 
       startRecurringDownload();
     else
@@ -108,9 +117,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
    * Kicks off the download service only once.
    */
   private void startOneTimeDownload() {
-    Intent intent = new Intent(getApplicationContext(),DownloadService.class);
-    intent.putExtra("remote", mRemote);
-    startService(intent);
+    executeRequest(Request.toInt(Request.DOWNLOAD), null);
   }
 
   /**
@@ -119,7 +126,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
    */
   private void startRecurringDownload() {
     Intent intent = new Intent(getApplicationContext(),AlarmReceiver.class);
-    intent.putExtra("remote", mRemote);
+    
     Calendar downloadTime = Calendar.getInstance(); // When to download
     downloadTime.setTimeInMillis(downloadTime.getTimeInMillis()+mRemote.getRefreshInterval());
     mRecurringDownload = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
@@ -142,15 +149,15 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
   }
 
   private void initializeFragments() {
-    queueFragment = QueueFragment.getInstance(mRemote);
-    historyFragment = HistoryFragment.getInstance(mRemote);
+    mQueueFragment = QueueFragment.getInstance(mRemote);
+    mHistoryFragment = HistoryFragment.getInstance(mRemote);
     statusFragment = StatusFragment.getInstance(mRemote);
-    currentVisibleFragment = queueFragment;
+    currentVisibleFragment = mQueueFragment;
   }
 
   private void setupAdapter() {
     adapter = new ViewRemotePagerAdapter(this,getSupportFragmentManager());    
-    adapter.addFragments(queueFragment,historyFragment,statusFragment);
+    adapter.addFragments(mQueueFragment,mHistoryFragment,statusFragment);
   }
 
   private void setupIndicator() {
@@ -203,7 +210,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
           Bundle b = new Bundle();
           b.putParcelable("remote", mRemote);
           b.putString("value",result);
-          sendMessageToService(b, DownloadService.ACTION_SET_SPEEDLIMIT);
+          executeRequest(Request.toInt(Request.SET_SPEED_LIMIT), b);
           Toast.makeText(getApplicationContext(),R.string.setting_speed_limit,Toast.LENGTH_SHORT).show();
         }
       });
@@ -322,8 +329,8 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
     @Override
     public void onDestroyActionMode(ActionMode mode) {
       mActionMode = null;
-      historyFragment.resetAdapter();
-      queueFragment.resetAdapter();
+      mHistoryFragment.resetAdapter();
+      mQueueFragment.resetAdapter();
     }
 
     @Override
@@ -336,7 +343,6 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
     @Override
     public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
       Bundle data = new Bundle();
-      data.putParcelable("remote", mRemote);
 
       switch(item.getItemId()) {
       case R.id.delete:
@@ -346,7 +352,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
         data.putString("value",ids);
         data.putString("mode",getCurrentMode());
         // Send the message
-        sendMessageToService(data, DownloadService.ACTION_DELETE);
+        executeRequest(Request.toInt(Request.DELETE), data);
         Toast.makeText(getApplicationContext(),R.string.removing,Toast.LENGTH_SHORT).show();
         mActionMode.finish();
         break;
@@ -359,7 +365,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
         // Add it to the message Bundle
         data.putString("value", ids);
         // Send the message
-        sendMessageToService(data, DownloadService.ACTION_PAUSE);
+        executeRequest(Request.toInt(Request.PAUSE), data);
         Toast.makeText(getApplicationContext(),R.string.pausing,Toast.LENGTH_SHORT).show();
         mActionMode.finish();
         break;
@@ -369,7 +375,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
         // Add it to the message Bundle
         data.putString("value", ids);
         // Send the message
-        sendMessageToService(data, DownloadService.ACTION_RESUME);
+        executeRequest(Request.toInt(Request.RESUME), data);
         Toast.makeText(getApplicationContext(),R.string.resuming,Toast.LENGTH_SHORT).show();
         mActionMode.finish();
         break;
@@ -409,8 +415,8 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 
   private SabListFragment getFragmentAt(int position) {
     switch(position) {
-    case 0: return queueFragment;
-    case 1: return historyFragment;
+    case 0: return mQueueFragment;
+    case 1: return mHistoryFragment;
     default: return null;
     }
   }
@@ -422,9 +428,11 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
   @Override
   public void onServiceConnected(ComponentName name, IBinder service) {
     mServiceMessenger = new Messenger(service);
-    // textStatus.setText("Attached.");
+
     try {
-      Message msg = Message.obtain(null, DownloadService.REGISTER_CLIENT);
+      Message msg = Message.obtain();
+      msg.what = RequestReceiver.REGISTER_CLIENT;
+      msg.obj = mRemote;
       msg.replyTo = mMessenger;
       mServiceMessenger.send(msg);
     } 
@@ -443,7 +451,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
    */
   private void bindToService() {
     if(!mIsBoundToService) {
-      bindService(new Intent(this, DownloadService.class), this, Context.BIND_AUTO_CREATE);
+      bindService(new Intent(this, RequestReceiver.class), this, Context.BIND_AUTO_CREATE);
       mIsBoundToService = true;
     }
   }
@@ -456,7 +464,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
       // If we have received the service, and hence registered with it, then now is the time to unregister.
       if (mServiceMessenger != null) {
         try {
-          Message msg = Message.obtain(null, DownloadService.UNREGISTER_CLIENT);
+          Message msg = Message.obtain(null, RequestReceiver.UNREGISTER_CLIENT);
           msg.replyTo = mMessenger;
           mServiceMessenger.send(msg);
         } 
@@ -471,17 +479,19 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
   }
 
   /**
-   * Send data to DownloadService.
+   * Send a request message to RequestReceiver so that
+   * the request and message can be properly handled. 
+   * @param request The action to execute.
    * @param data The data to be sent.
-   * @param action The action to execute.
    */
-  private void sendMessageToService(Bundle data,int action) {
+  private void executeRequest(int request, Bundle data) {    
     if (mIsBoundToService) {
       if (mServiceMessenger != null) {
         try {
-          Message msg = Message.obtain(null,action);
-          msg.setData(data);
+          Message msg = Message.obtain();
+          msg.what = request;          
           msg.replyTo = mMessenger;
+          msg.setData(data);
           mServiceMessenger.send(msg);
         }
         catch (RemoteException e) {
@@ -507,63 +517,6 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
     super.onDestroy();
   }
 
-  @Override
-  public void onReceiveHistory(JSONObject result) {
-    ArrayList<NzoItem> historyItems = new ArrayList<NzoItem>();
-    try {
-      JSONArray arrayObject = result.getJSONObject("history").getJSONArray("slots");
-      for(int i = 0, max = arrayObject.length(); i < max; i++) {
-        NzoItem item = new HistoryItem().buildFromJson(arrayObject.getJSONObject(i));
-        historyItems.add(item);
-      }
-      historyFragment.updateItems(historyItems);
-    } 
-    catch (JSONException e) {
-      e.printStackTrace();
-    }
-    finally {
-      historyDownloadCompleted = true;
-      onFinishConnection();
-    }	  	
-  }
-
-  @Override
-  public void onReceiveQueue(JSONObject result) {
-    ArrayList<NzoItem> queueItems = new ArrayList<NzoItem>();
-    try {
-      JSONArray arrayObject = result.getJSONObject("queue").getJSONArray("slots");
-      for(int i = 0, max = arrayObject.length(); i < max; i++) {
-        NzoItem item = new QueueItem().buildFromJson(arrayObject.getJSONObject(i));
-        queueItems.add(item);
-      }
-      queueFragment.updateItems(queueItems);
-    } 
-    catch (JSONException e) {
-      e.printStackTrace();
-    }
-    finally {
-      queueDownloadCompleted = true;
-      onFinishConnection();
-    }		
-  }
-
-  @Override
-  public void onDownloadFailure(String message) {
-    onFinishConnection();
-    showDialog(errorDialog, message);
-  }
-
-  @Override
-  public void onStatusReceived(boolean status,String errorMsg) {
-    onFinishConnection();
-    if(status) { // Re-fresh data
-      startOneTimeDownload();
-      Toast.makeText(getApplicationContext(),R.string.refreshing_data,Toast.LENGTH_SHORT).show();
-    }
-    else {
-      showDialog(errorDialog, errorMsg);
-    }
-  }
 
   /**
    * When data connection has completed, regardless if it was
@@ -625,10 +578,37 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
     if(errorDialog == null) {
       errorDialog = AlertDialogFactory.getErrorInstance(this);
     }
-    
+
     if(!errorDialog.isShowing()) {
       errorDialog.setMessage(message);
       errorDialog.show();
     }
+  }
+  
+  public Messenger getMessenger() {
+    return mMessenger;
+  }
+
+  public class IncomingHandler extends Handler {
+
+    @Override
+    public void handleMessage(Message msg) {
+      switch(msg.what) {
+      case QUEUE:
+        List<NzoItem> newData = (List<NzoItem>) msg.obj;
+        onFinishConnection();
+        mQueueFragment.updateItems(newData);
+        break;
+      case HISTORY:
+        newData = (List<NzoItem>) msg.obj;
+        onFinishConnection();
+        mHistoryFragment.updateItems(newData);
+        break;
+      case STATUS:
+        break;
+      }
+      super.handleMessage(msg);
+    }
+
   }
 }

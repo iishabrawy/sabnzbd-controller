@@ -46,7 +46,7 @@
             android:theme="@style/Theme.Sabnzbd" >
         </activity>
         <receiver android:name=".receivers.AlarmReceiver"></receiver>
-        <service android:name=".services.DownloadService"></service>
+        <service android:name=".services.RequestReceiver"></service>
     </application>
 
 </manifest>

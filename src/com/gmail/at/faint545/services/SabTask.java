@@ -1,32 +1,32 @@
 package com.gmail.at.faint545.services;
 
-import android.app.Service;
-import android.os.AsyncTask;
+import java.io.IOException;
 
-import com.gmail.at.faint545.utils.ExceptionHandler;
-import com.gmail.at.faint545.utils.HttpResponseParser;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
-import java.io.IOException;
+
+import android.os.AsyncTask;
+
+import com.gmail.at.faint545.utils.ExceptionHandler;
+import com.gmail.at.faint545.utils.HttpResponseParser;
 
 public class SabTask extends AsyncTask<HttpPost, Void, String> {
   private static final String LOGTAG = "SabTask";
 	
-	private OnDownloadTaskFinished mCallback;
+	private SabTaskListener mCallback;
 	
-	public interface OnDownloadTaskFinished {
-		public void onComplete(String results);
-		public void onIncomplete(String error);
+	public interface SabTaskListener {
+		public void onTaskCompleted(String results);
 	}
 	
-	public SabTask(Service service) {
-		if(service instanceof OnDownloadTaskFinished)
-			mCallback = (OnDownloadTaskFinished) service;
+	public SabTask(Object callback) {
+		if(callback instanceof SabTaskListener)
+			mCallback = (SabTaskListener) callback;
 		else
-			throw new IllegalStateException("You must implement OnDownloadTaskFinished!");
+			throw new IllegalStateException(callback.getClass().getName() + " must implement OnDownloadTaskFinished!");
 	}
 
 	@Override
@@ -50,8 +50,6 @@ public class SabTask extends AsyncTask<HttpPost, Void, String> {
 	@Override
   protected void onPostExecute(String result) {
     if(result != null)
-    	mCallback.onComplete(result);
-    else
-    	mCallback.onIncomplete(result);
+    	mCallback.onTaskCompleted(result);
   }		
 }

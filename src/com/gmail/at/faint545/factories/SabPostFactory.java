@@ -1,23 +1,22 @@
-package com.gmail.at.faint545.services;
+package com.gmail.at.faint545.factories;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
-
 import com.gmail.at.faint545.Remote;
 
+/**
+ * This factory class generates the proper HttpPost object
+ * to be executed by an HttpClient.
+ * @author alex
+ *
+ */
 public class SabPostFactory {
 
-	/**
-	 * Creates the proper HttPost to send to SABNzbd with
-	 * user specified arguments.
-	 * @param message
-	 */
 	public static HttpPost getQueueInstance(Remote remote,int offset) {
 		HttpPost post = new HttpPost(remote.getUrl()+"/api?");
 
@@ -84,18 +83,7 @@ public class SabPostFactory {
 
     return post;
   }
-
-  /**
-   * Generates the correct HttpPost to execute.
-   * Required additional arguments:
-   * <ul>
-   *   <li>name - Name of the method to run. This will be <b>delete</b></li>
-   *   <li>mode - The mode to operate in. This will be either <b>history</b> or <b>queue</b></li>
-   *   <li>value - The NZO ids of selected items</li>
-   * </ul>
-   * @param message User specified arguments.
-   * @return An HttpPost that is executable by an HttpClient.
-   */
+  
   public static HttpPost getDeleteInstance(Remote remote,String mode,String value) {
     HttpPost post = new HttpPost(remote.getUrl()+"/api?");
 
@@ -120,6 +108,22 @@ public class SabPostFactory {
       List<NameValuePair> parameters = buildBaseParams(remote);
       parameters.add(new BasicNameValuePair("name", "speedlimit"));
       parameters.add(new BasicNameValuePair("mode","config"));
+      parameters.add(new BasicNameValuePair("value", value));
+      post.setEntity(new UrlEncodedFormEntity(parameters));
+    }
+    catch(UnsupportedEncodingException e) {
+      e.printStackTrace();
+    }
+
+    return post;
+  }
+  
+  public static HttpPost getRetryInstance(Remote remote, String value) {
+    HttpPost post = new HttpPost(remote.getUrl()+"/api?");
+
+    try {
+      List<NameValuePair> parameters = buildBaseParams(remote);
+      parameters.add(new BasicNameValuePair("mode","retry"));
       parameters.add(new BasicNameValuePair("value", value));
       post.setEntity(new UrlEncodedFormEntity(parameters));
     }

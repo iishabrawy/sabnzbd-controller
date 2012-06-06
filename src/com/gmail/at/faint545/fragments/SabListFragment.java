@@ -1,17 +1,18 @@
 package com.gmail.at.faint545.fragments;
 
+import java.util.List;
+
 import com.actionbarsherlock.app.SherlockListFragment;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.gmail.at.faint545.Remote;
+import com.gmail.at.faint545.activities.SabFragmentActivity;
 import com.gmail.at.faint545.adapters.SabAdapter;
 import com.gmail.at.faint545.nzo.NzoItem;
 
-import java.util.ArrayList;
-
 public abstract class SabListFragment extends SherlockListFragment {
 
-  public abstract void updateItems(ArrayList<NzoItem> items);
+  public abstract void updateItems(List<NzoItem> items);
   public abstract void resetAdapter();
   public abstract void inflateActionModeMenu(ActionMode mode, Menu menu);
   public abstract Remote getRemote();

@@ -25,10 +25,10 @@ public class QueueItem extends NzoItem {
   }
 
   @Override
-  public QueueItem buildFromJson(JSONObject object) throws JSONException {    
+  public NzoItem buildFromJson(JSONObject object) throws JSONException {    
     timeleft = object.getString(SabConstants.TIMELEFT);
     percentDone = object.getInt(SabConstants.PERCENTAGE);
-    return (QueueItem) super.buildFromJson(object);
+    return super.buildFromJson(object);
   }
 
   ////////////////////////////////////////////////////////////////////////

@@ -1,17 +1,22 @@
 package com.gmail.at.faint545.fragments;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +26,14 @@ import android.widget.ListView;
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.commonsware.cwac.endless.EndlessAdapter;
-import com.gmail.at.faint545.HistoryItem;
-import com.gmail.at.faint545.NzoItem;
 import com.gmail.at.faint545.R;
 import com.gmail.at.faint545.Remote;
+import com.gmail.at.faint545.activities.ViewRemoteActivity;
 import com.gmail.at.faint545.adapters.QueueAdapter;
 import com.gmail.at.faint545.adapters.SabAdapter;
-import com.gmail.at.faint545.services.SabPostFactory;
+import com.gmail.at.faint545.factories.SabPostFactory;
+import com.gmail.at.faint545.nzo.NzoItem;
+import com.gmail.at.faint545.nzo.QueueItem;
 import com.gmail.at.faint545.utils.HttpResponseParser;
 
 public class QueueFragment extends SabListFragment {
@@ -62,7 +68,7 @@ public class QueueFragment extends SabListFragment {
     SabAdapter listAdapter = new QueueAdapter(getActivity(), R.layout.queue_row, queueItems, checkedPositions);
     mEndlessListAdapter = new QueueEndlessAdapter(getActivity(), listAdapter, R.layout.endless_row);
     mListView.setAdapter(mEndlessListAdapter);
-	  super.onActivityCreated(savedInstanceState);
+    super.onActivityCreated(savedInstanceState);
   }
 
   @Override
@@ -74,17 +80,17 @@ public class QueueFragment extends SabListFragment {
    * Method to update the current adapters data.
    */
   @Override
-  public void updateItems(ArrayList<NzoItem> items) {
-  	getListAdapter().clearData();
-  	mEndlessListAdapter.reset();
+  public void updateItems(List<NzoItem> items) {
+    getListAdapter().clearData();
+    mEndlessListAdapter.reset();
     //queueItems.clear();
     //queueItems.addAll(items);
     checkedPositions.clear();
-    
+
     for(int i = 0, max = queueItems.size(); i < max; i++) {
       checkedPositions.add(false);
     }
-    
+
     getListAdapter().notifyDataSetChanged();
   }
 
@@ -92,7 +98,7 @@ public class QueueFragment extends SabListFragment {
   public SabAdapter getListAdapter() {
     return (SabAdapter) mEndlessListAdapter.getWrappedAdapter();
   }
-  
+
   @Override
   public void onPause() {
     mEndlessListAdapter.reset();
@@ -112,8 +118,8 @@ public class QueueFragment extends SabListFragment {
   public Remote getRemote() {
     return getArguments().getParcelable(EXTRA);
   }
-  
-	private class QueueEndlessAdapter extends EndlessAdapter {
+
+  private class QueueEndlessAdapter extends EndlessAdapter {
 
     private static final String LOGTAG = "HistoryEndlessAdapter";
     private List<NzoItem> cache = new ArrayList<NzoItem>();
@@ -129,7 +135,7 @@ public class QueueFragment extends SabListFragment {
     }
 
     @Override
-    protected boolean cacheInBackground() throws Exception {
+    protected boolean cacheInBackground() {
       // Execute the request.      
       HttpClient client = new DefaultHttpClient();
       HttpPost post = SabPostFactory.getQueueInstance(getRemote(),mOffset);
@@ -138,17 +144,30 @@ public class QueueFragment extends SabListFragment {
       // we want to to begin loading from +1 where we left off. 
       mOffset += 11; 
 
-      // Get the response/result.
-      HttpResponse response = client.execute(post);
-      String result = HttpResponseParser.parseResponse(response);
+      try {
+        // Get the response/result.
+        HttpResponse response = client.execute(post);
+        String result = HttpResponseParser.parseResponse(response);
 
-      JSONObject object = new JSONObject(result);
-      JSONArray slots = object.getJSONObject("queue").getJSONArray("slots");
+        JSONObject object = new JSONObject(result);
+        JSONArray slots = object.getJSONObject("queue").getJSONArray("slots");
 
-      for(int i = 0, max = slots.length(); i < max; i++) {
-        cache.add(new QueueItem().buildFromJson(slots.getJSONObject(i)));
+        for(int i = 0, max = slots.length(); i < max; i++) {
+          cache.add(new QueueItem().buildFromJson(slots.getJSONObject(i)));
+        }
+        return cache.size() > 0;
       }
-      return cache.size() > 0;
+      catch(JSONException e) {
+        e.printStackTrace();
+      } 
+      catch (ClientProtocolException e) {
+        e.printStackTrace();
+      } 
+      catch (IOException e) {
+        // getSabActivity().showErrorDialog("Connection failed.");
+        e.printStackTrace();
+      }
+      return false;
     }
 
     @Override
@@ -160,10 +179,10 @@ public class QueueFragment extends SabListFragment {
       cache.clear();
       adapter.notifyDataSetChanged();
     }
-    
+
     public void reset() {
-    	mOffset = 0;
-    	super.reset();
+      mOffset = 0;
+      super.reset();
     }
   }  
 }
