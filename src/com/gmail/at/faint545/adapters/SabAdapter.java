@@ -7,9 +7,6 @@ import android.widget.BaseAdapter;
 import com.gmail.at.faint545.nzo.NzoItem;
 
 public abstract class SabAdapter extends BaseAdapter {
-  public boolean isEven(int position) {
-    return position%2 == 0 ? true : false;
-  }
   
   public abstract void setAllChecked(boolean isChecked);
   public abstract String getCheckedIds();

@@ -116,14 +116,7 @@ public class HistoryDetailsActivity extends SherlockListActivity {
       if(convertView == null) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         convertView = inflater.inflate(rowId, null);
-      }
-
-      if(isEven(position)) {
-        convertView.setBackgroundResource(drawable.listview_even_selector);
-      }
-      else {
-        convertView.setBackgroundResource(drawable.listview_odd_selector);
-      }        
+      }  
 
       TextView title = (TextView) convertView.findViewById(R.id.history_details_row_title);
       TextView value = (TextView) convertView.findViewById(R.id.history_details_row_value);

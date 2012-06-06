@@ -1,10 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:sabnzbd="http://schemas.android.com/apk/res/com.gmail.at.faint545"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:gravity="center_vertical" >
+    android:gravity="center" >
+
+    <ViewStub
+        android:id="@+id/no_connection_stub"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout="@layout/no_connection" />
 
     <com.gmail.at.faint545.views.ListView
         android:id="@android:id/list"
@@ -22,7 +27,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"
-        android:text="@string/history_empty"
-        sabnzbd:fontface="fonts/Roboto-Condensed.ttf" />
+        android:text="@string/history_empty" />
 
-</RelativeLayout>
+</LinearLayout>

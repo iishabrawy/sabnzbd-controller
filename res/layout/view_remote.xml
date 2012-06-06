@@ -10,18 +10,16 @@
         android:id="@+id/indicator"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/vpi__background"
+        android:background="@drawable/vpi_background"
+        android:textColor="#7FFFFFFF"
         vpi:clipPadding="-15dip"
-        vpi:footerColor="@color/sab_yellow"
-        vpi:footerIndicatorHeight="5dip"
-        vpi:footerIndicatorStyle="triangle"
-        vpi:footerLineHeight="3dip"
-        vpi:footerPadding="8dip"
-        vpi:selectedBold="false"
+        vpi:footerColor="@android:color/transparent"
+        vpi:footerIndicatorStyle="none"
+        vpi:footerIndicatorHeight="0dip"
+        vpi:footerLineHeight="4dip"
+        vpi:selectedBold="true"
         vpi:selectedColor="@android:color/white"
-        android:textColor="#33FFFFFF"
-        vpi:titlePadding="55dip"
-        vpi:topPadding="8dip" />
+        vpi:titlePadding="55dip" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/pager"

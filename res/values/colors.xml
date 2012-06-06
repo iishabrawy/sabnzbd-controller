@@ -3,9 +3,9 @@
     <color name="list_divider">#3c3c3c</color>
     <color name="remote_action_pressed">#4cffffff</color>
     <color name="abs__item_pressed">#80ffb100</color>
-    <color name="listview_even">#e0e0e0</color>
-    <color name="listview_odd">#d0d0d0</color>
+    <color name="listview_even">@color/background</color>
+    <color name="listview_odd">@color/background</color>
     <color name="background">#d4d4d4</color>
-    <color name="sab_yellow">#ffb100</color>
-    <color name="abs__background">#2b2b2b</color>
+    <color name="sab_yellow">#eab000</color>
+    <color name="ab_background">#2b2b2b</color>
 </resources>

@@ -39,7 +39,6 @@ import com.gmail.at.faint545.factories.AlertDialogFactory;
 import com.gmail.at.faint545.fragments.HistoryFragment;
 import com.gmail.at.faint545.fragments.QueueFragment;
 import com.gmail.at.faint545.fragments.SabListFragment;
-import com.gmail.at.faint545.fragments.StatusFragment;
 import com.gmail.at.faint545.interfaces.CheckChangedListener;
 import com.gmail.at.faint545.nzo.NzoItem;
 import com.gmail.at.faint545.receivers.AlarmReceiver;
@@ -57,7 +56,6 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 	private TitlePageIndicator pageIndicator;
 	private QueueFragment mQueueFragment;
 	private HistoryFragment mHistoryFragment;
-	private StatusFragment statusFragment;
 	private Remote mRemote;
 
 	// Flags to determine if an attempt to
@@ -148,13 +146,12 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 	private void initializeFragments() {
 		mQueueFragment = QueueFragment.getInstance(mRemote);
 		mHistoryFragment = HistoryFragment.getInstance(mRemote);
-		statusFragment = StatusFragment.getInstance(mRemote);
 		currentVisibleFragment = mQueueFragment;
 	}
 
 	private void setupAdapter() {
 		adapter = new ViewRemotePagerAdapter(this,getSupportFragmentManager());    
-		adapter.addFragments(mQueueFragment,mHistoryFragment,statusFragment);
+		adapter.addFragments(mQueueFragment,mHistoryFragment);
 	}
 
 	private void setupIndicator() {

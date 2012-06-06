@@ -122,13 +122,6 @@ public class MainActivity extends SherlockListActivity {
         convertView = inflater.inflate(resId, null);
       } 
 
-      if(isEven(position)) {
-        convertView.setBackgroundResource(R.drawable.listview_even_selector);
-      }
-      else {
-        convertView.setBackgroundResource(R.drawable.listview_odd_selector);
-      }
-
       nick = (TextView) convertView.findViewById(R.id.remote_nick);      
       options = convertView.findViewById(R.id.remote_options);     
 
@@ -142,10 +135,6 @@ public class MainActivity extends SherlockListActivity {
         }
       });
       return convertView;
-    }
-
-    private boolean isEven(int position) {      
-      return position%2 == 0 ? true : false;
     }
   }
 

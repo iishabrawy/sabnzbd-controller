@@ -17,6 +17,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.os.Messenger;
+import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,181 +39,211 @@ import com.gmail.at.faint545.adapters.SabAdapter;
 import com.gmail.at.faint545.factories.SabPostFactory;
 import com.gmail.at.faint545.nzo.HistoryItem;
 import com.gmail.at.faint545.nzo.NzoItem;
-import com.gmail.at.faint545.utils.ExceptionHandler;
 import com.gmail.at.faint545.utils.HttpResponseParser;
 
 public class HistoryFragment extends SabListFragment {
-	private static final String LOGTAG = "HistoryFragment";
-	public static final String EXTRA = "extra";
+  private static final String LOGTAG = "HistoryFragment";
+  public static final String EXTRA = "extra";
 
-	private ArrayList<Boolean> checkedPositions = new ArrayList<Boolean>();
+  private ArrayList<Boolean> checkedPositions = new ArrayList<Boolean>();
 
-	private ListView mListView;
-	private HistoryEndlessAdapter mEndlessListAdapter;
+  private ListView mListView;
+  private HistoryEndlessAdapter mEndlessListAdapter;
 
-	// Saves the scrolled position in ListView
-	// and it's offset from top.
-	private int scrolledPosition, offsetFromTop; 
+  // Saves the scrolled position in ListView
+  // and it's offset from top.
+  private int scrolledPosition, offsetFromTop; 
 
-	// Request code to view history details.
-	public static final int VIEW = R.id.view__history_details >> 17;
+  // Request code to view history details.
+  public static final int VIEW = R.id.view__history_details >> 17;
 
-	private HistoryFragment() {}
+  private Messenger mMessenger = new Messenger(new Handler() {
 
-	public static HistoryFragment getInstance(Remote remote) {    
-		HistoryFragment fragment = new HistoryFragment();
-		Bundle args = new Bundle();
-		args.putParcelable(EXTRA, remote);
-		fragment.setArguments(args);
-		return fragment;
-	}
+    @Override
+    public void handleMessage(Message msg) {
+      switch(msg.what) {
+      case R.id.no_connection:        
+        setNoConnectionVisibility(View.VISIBLE);
+        break;
+      }
+      super.handleMessage(msg);
+    }
 
-	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		View view = inflater.inflate(layout.history, null);
-		mListView = (ListView) view.findViewById(android.R.id.list);
-		return view;
-	}
+  });
 
-	@Override
-	public void onActivityCreated(Bundle savedInstanceState) {
-		SabAdapter mListAdapter = new HistoryAdapter(getActivity(), layout.history_row, new ArrayList<NzoItem>(),
-				checkedPositions);
-		mEndlessListAdapter = new HistoryEndlessAdapter(getActivity(),mListAdapter,R.layout.endless_row);
-		mListView.setAdapter(mEndlessListAdapter);
-		super.onActivityCreated(savedInstanceState);
-	}
+  private HistoryFragment() {}
 
-	@Override
-	public void onListItemClick(ListView l, View v, int position, long id) {
-		Activity activity = getActivity();
-		Intent intent = new Intent(activity,HistoryDetailsActivity.class); 
-		intent.putExtra(HistoryDetailsActivity.KEY, (NzoItem) getListAdapter().getItem(position));
-		activity.startActivityForResult(intent,VIEW);
-		activity.overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
-	}
+  public static HistoryFragment getInstance(Remote remote) {    
+    HistoryFragment fragment = new HistoryFragment();
+    Bundle args = new Bundle();
+    args.putParcelable(EXTRA, remote);
+    fragment.setArguments(args);
+    return fragment;
+  }
 
-	@Override
-	public void updateItems(List<NzoItem> items) {
-		getListAdapter().clearData();
-		mEndlessListAdapter.reset();
-		// Re-create checked positions when new data
-		// arrives.
-		checkedPositions.clear();
-		for(int i = 0, max = getListAdapter().getCount(); i < max; i++) {
-			checkedPositions.add(false);
-		}
+  @Override
+  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    View view = inflater.inflate(layout.history, null);
+    mListView = (ListView) view.findViewById(android.R.id.list);
+    return view;
+  }
 
-		getListAdapter().notifyDataSetChanged();
-	}
+  @Override
+  public void onActivityCreated(Bundle savedInstanceState) {
+    SabAdapter mListAdapter = new HistoryAdapter(getActivity(), layout.history_row, new ArrayList<NzoItem>(),
+        checkedPositions);
+    mEndlessListAdapter = new HistoryEndlessAdapter(getActivity(),mListAdapter,R.layout.endless_row);
+    mListView.setAdapter(mEndlessListAdapter);
+    super.onActivityCreated(savedInstanceState);
+  }
 
-	@Override
-	public void resetAdapter() {
-		getListAdapter().reset();
-	}
+  @Override
+  public void onListItemClick(ListView l, View v, int position, long id) {
+    Activity activity = getActivity();
+    Intent intent = new Intent(activity,HistoryDetailsActivity.class); 
+    intent.putExtra(HistoryDetailsActivity.KEY, (NzoItem) getListAdapter().getItem(position));
+    activity.startActivityForResult(intent,VIEW);
+    activity.overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
+  }
 
-	@Override
-	public void onPause() {
-		scrolledPosition = mListView.getFirstVisiblePosition();
-		View firstVisibleChild = mListView.getChildAt(0);
-		offsetFromTop = (firstVisibleChild == null) ? 0 : firstVisibleChild.getTop();
-		resetAdapter();
-		super.onPause();
-	}
+  @Override
+  public void updateItems(List<NzoItem> items) {
+    getListAdapter().clearData();
+    getListAdapter().addAll(items);
 
-	@Override
-	public void onResume() {
-		mListView.setSelectionFromTop(scrolledPosition, offsetFromTop);    
-		super.onResume();
-	}
+    // Re-create checked positions when new data
+    // arrives.
+    checkedPositions.clear();
+    for(int i = 0, max = getListAdapter().getCount(); i < max; i++) {
+      checkedPositions.add(false);
+    }
+    
+    setNoConnectionVisibility(View.GONE);
+    mEndlessListAdapter.reset();		
+    getListAdapter().notifyDataSetChanged();
+  }
 
-	@Override
-	public void inflateActionModeMenu(ActionMode mode, Menu menu) {
-		return;
-	}
+  @Override
+  public void resetAdapter() {
+    getListAdapter().reset();
+  }
 
-	@Override
-	public Remote getRemote() {
-		return getArguments().getParcelable(EXTRA);
-	}
+  @Override
+  public void onPause() {
+    scrolledPosition = mListView.getFirstVisiblePosition();
+    View firstVisibleChild = mListView.getChildAt(0);
+    offsetFromTop = (firstVisibleChild == null) ? 0 : firstVisibleChild.getTop();
+    resetAdapter();
+    super.onPause();
+  }
 
-	@Override
-	public SabAdapter getListAdapter() {    
-		return (SabAdapter) mEndlessListAdapter.getWrappedAdapter();
-	}
+  @Override
+  public void onResume() {
+    mListView.setSelectionFromTop(scrolledPosition, offsetFromTop);    
+    super.onResume();
+  }
 
-	private class HistoryEndlessAdapter extends EndlessAdapter {
+  @Override
+  public void inflateActionModeMenu(ActionMode mode, Menu menu) {
+    return;
+  }
 
-		private static final String LOGTAG = "HistoryEndlessAdapter";
-		private List<NzoItem> cache = new ArrayList<NzoItem>();
+  @Override
+  public Remote getRemote() {
+    return getArguments().getParcelable(EXTRA);
+  }
 
-		private int mOffset = 0;
+  @Override
+  public SabAdapter getListAdapter() {    
+    return (SabAdapter) mEndlessListAdapter.getWrappedAdapter();
+  }
 
-		public HistoryEndlessAdapter(Context context, ListAdapter wrapped,
-				int pendingResource) {
-			super(context, wrapped, pendingResource);
-		}
+  private void setNoConnectionVisibility(int visibility) {
+    View view = getView().findViewById(R.id.no_connection_stub);
+    if(view != null) {
+      view.setVisibility(visibility);
+    }
+  }
 
-		public HistoryEndlessAdapter(ListAdapter wrapped) {
-			super(wrapped);
-		}
+  private class HistoryEndlessAdapter extends EndlessAdapter {
 
-		@Override
-		protected boolean cacheInBackground() {
-			// Get the proper HttpPost      
-			HttpClient client = new DefaultHttpClient();
-			HttpPost post = SabPostFactory.getHistoryInstance(getRemote(),mOffset);
+    private static final String LOGTAG = "HistoryEndlessAdapter";
+    private List<NzoItem> cache = new ArrayList<NzoItem>();
 
-			// We add 11 because we only show 10 items at a time, and next time,
-			// we want to to begin loading from +1 where we left off. 
-			mOffset += 11; 
+    private int mOffset = 0;
 
-			try {
-				// Execute the HttpPost
-				HttpResponse response = client.execute(post);
-				String result = HttpResponseParser.parseResponse(response);
+    public HistoryEndlessAdapter(Context context, ListAdapter wrapped,
+        int pendingResource) {
+      super(context, wrapped, pendingResource);
+    }
 
-				JSONObject object = new JSONObject(result);
-				
-				// Check results
-				if(object.has("history")) {
-					JSONArray slots = object.getJSONObject("history").getJSONArray("slots");
-					for(int i = 0, max = slots.length(); i < max; i++) {
-						cache.add(new HistoryItem().buildFromJson(slots.getJSONObject(i)));
-					}
-					return cache.size() > 0;
-				}
-				else if(object.has("error")) {
-					getSabActivity().showErrorDialog("SABNzbd says: " + object.getString("error"));
-					return false;
-				}
-			}
-			catch(JSONException e) {
-				e.printStackTrace();
-			} 
-			catch (ClientProtocolException e) {        
-				e.printStackTrace();
-			}
-			catch (IOException e) {
-				getSabActivity().showErrorDialog(ExceptionHandler.translate(e));
-				e.printStackTrace();
-			}
-			return false;
-		}
+    public HistoryEndlessAdapter(ListAdapter wrapped) {
+      super(wrapped);
+    }
 
-		@Override
-		protected void appendCachedData() {
-			SabAdapter adapter = (SabAdapter) getWrappedAdapter();
-			for(NzoItem item : cache) {
-				adapter.add(item);
-			}
-			cache.clear();
-			adapter.notifyDataSetChanged();
-		}
+    @Override
+    protected boolean cacheInBackground() {
+      // Get the proper HttpPost      
+      HttpClient client = new DefaultHttpClient();
+      HttpPost post = SabPostFactory.getHistoryInstance(getRemote(),mOffset);
 
-		public void reset() {
-			mOffset = 0;
-			super.reset();
-		}    
-	}
+      // We add 11 because we only show 10 items at a time, and next time,
+      // we want to to begin loading from +1 where we left off. 
+      mOffset += 11; 
+
+      try {
+        // Execute the HttpPost
+        HttpResponse response = client.execute(post);
+        String result = HttpResponseParser.parseResponse(response);
+
+        JSONObject object = new JSONObject(result);
+
+        // Check results
+        if(object.has("history")) {
+          JSONArray slots = object.getJSONObject("history").getJSONArray("slots");
+          for(int i = 0, max = slots.length(); i < max; i++) {
+            cache.add(new HistoryItem().buildFromJson(slots.getJSONObject(i)));
+          }
+          return cache.size() > 0;
+        }
+        else if(object.has("error")) {
+          getSabActivity().showErrorDialog("SABNzbd says: " + object.getString("error"));
+          return false;
+        }
+      }
+      catch(JSONException e) {
+        e.printStackTrace();
+      } 
+      catch (ClientProtocolException e) {        
+        e.printStackTrace();
+      }
+      catch (IOException e) {
+        try {
+          Message m = Message.obtain();
+          m.what = R.id.no_connection;
+          mMessenger.send(m);
+        } 
+        catch (RemoteException re) {
+          re.printStackTrace();
+        }
+        e.printStackTrace();
+      }
+      return false;
+    }
+
+    @Override
+    protected void appendCachedData() {
+      SabAdapter adapter = (SabAdapter) getWrappedAdapter();
+      for(NzoItem item : cache) {
+        adapter.add(item);
+      }
+      cache.clear();
+      adapter.notifyDataSetChanged();
+    }
+
+    public void reset() {
+      mOffset = 0;
+      super.reset();
+    }    
+  }
 }

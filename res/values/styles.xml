@@ -8,30 +8,21 @@
         <item name="android:windowBackground">@color/background</item>
         <item name="actionBarStyle">@style/Theme.Sabnzbd.ActionBar.Style</item>
         <item name="android:actionBarStyle">@style/Theme.Sabnzbd.ActionBar.Style</item>
-        <item name="android:selectableItemBackground">@drawable/abs__item_selector</item>
+                      
         <item name="actionBarItemBackground">@drawable/abs__item_selector</item>
+        <item name="android:actionBarItemBackground">@drawable/abs__item_selector</item>
+        
         <item name="actionModeStyle">@style/ActionMode</item>
         <item name="android:actionModeStyle">@style/ActionMode</item>
     </style>
 
     <!-- Default ActionBar style -->
     <style name="Theme.Sabnzbd.ActionBar.Style" parent="Widget.Sherlock.Light.ActionBar.Solid.Inverse">
-        <item name="background">@color/abs__background</item>
-        <item name="android:background">@color/abs__background</item>
-        <item name="backgroundSplit">@color/abs__background</item>
-        <item name="android:backgroundSplit">@color/abs__background</item>
-    </style>
-
-    <!-- A Sabnzbd theme with an alternative ActionBar style -->
-    <style name="Theme.Sabnzbd.Alt" parent="@style/Theme.Sabnzbd">
-        <item name="actionBarStyle">@style/Theme.Sabnzbd.ActionBar.Style.Alt</item>
-        <item name="android:actionBarStyle">@style/Theme.Sabnzbd.ActionBar.Style.Alt</item>
-    </style>
-
-    <!-- Alternative ActionBar style -->
-    <style name="Theme.Sabnzbd.ActionBar.Style.Alt" parent="Widget.Sherlock.Light.ActionBar.Solid.Inverse">
-        <item name="background">@drawable/abs__background</item>
-        <item name="android:background">@drawable/abs__background</item>
+        <item name="background">@drawable/ab_background</item>
+        <item name="android:background">@drawable/ab_background</item>
+        
+        <item name="backgroundSplit">@color/ab_background</item>
+        <item name="android:backgroundSplit">@color/ab_background</item>
     </style>
 
     <!-- Additional styles -->
@@ -40,20 +31,20 @@
     </style>
 
     <style name="ActionMode" parent="Sherlock.__Widget.ActionMode">
-        <item name="background">@color/abs__background</item>
+        <item name="background">@color/ab_background</item>
     </style>
 
     <!-- ListView separator style -->
     <style name="ListView" />
 
     <style name="ListView.Separator">
-        <item name="android:background">@color/abs__background</item>
+        <item name="android:background">@color/ab_background</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:paddingLeft">6dip</item>
-        <item name="fontface">fonts/Roboto-BoldCondensed.ttf</item>        
+        <item name="fontface">fonts/Roboto-Bold.ttf</item>        
     </style>
 
-    <!-- Custom TextView styles -->
+    <!-- Custom text styles -->
     <style name="TextAppearance" parent="@android:style/TextAppearance">
         <item name="fontface">fonts/Roboto-Regular.ttf</item>
     </style>
@@ -83,6 +74,7 @@
     <style name="TextAppearance.Empty" parent="TextAppearance">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">#66000000</item>
+        <item name="fontface">fonts/Roboto-BoldCondensed.ttf</item>
     </style>
 
 </resources>

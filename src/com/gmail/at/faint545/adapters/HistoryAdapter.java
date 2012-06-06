@@ -7,7 +7,6 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -76,13 +75,6 @@ public class HistoryAdapter extends SabAdapter {
       convertView.setTag(viewHolder);
     }
     viewHolder = (ViewHolder) convertView.getTag();     
-
-    if(isEven(position)) {
-      convertView.setBackgroundResource(R.drawable.listview_even_selector);
-    }
-    else {
-      convertView.setBackgroundResource(R.drawable.listview_odd_selector);
-    }
 
     convertView.findViewById(R.id.root).setPadding(10, 10, 10, 10);
 

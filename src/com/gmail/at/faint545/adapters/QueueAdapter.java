@@ -65,13 +65,6 @@ public class QueueAdapter extends SabAdapter {
     }      
     viewHolder = (ViewHolder) convertView.getTag();
 
-    if(isEven(position)) {
-      convertView.setBackgroundResource(R.drawable.listview_even_selector);
-    }
-    else {
-      convertView.setBackgroundResource(R.drawable.listview_odd_selector);
-    }  
-
     // Apply padding to the row.
     // See http://code.google.com/p/android/issues/detail?id=27235
     convertView.findViewById(R.id.queue_row_root).setPadding(6, 6, 6, 6);      

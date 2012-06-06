@@ -11,4 +11,6 @@
     <item type="id" name="del_queue"/>
     <item type="id" name="retry_history"/>
     <item type="id" name="set_speed"/>
+    
+    <item type="id" name="no_connection"></item>
 </resources>
