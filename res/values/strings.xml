@@ -2,7 +2,6 @@
 <resources>
 
     <string name="app_name">SABNzbd</string>
-    <string name="title_new_remote">New Remote</string>
     <string name="title_update_remote">Add/Update Remote</string>
     <string name="general">General</string>
     <string name="auth">Authentication</string>
@@ -56,14 +55,14 @@
     <!-- Verbose messages -->
     <string name="nothing_selected">No items are selected!</string>
     <string name="speed_limit_set">Speed limit set!</string>
-    <string name="setting_speed_limit">Setting speed limit...</string>
+    <string name="setting_speed_limit">Setting speed limit…</string>
     <string name="speed_limit_failed">Failed to set speed limit!</string>
     <string name="delete_failed">Delete failed!</string>
     <string name="retry_failed">Retry failed!</string>
     <string name="failed">Failed!</string>
     <string name="success">Success!</string>
     <string name="remote_fail_save">Could not save remote! Check your preferences.</string>
-    <string name="refreshing_data">Refreshing data...</string>
+    <string name="refreshing_data">Refreshing data…</string>
 
     <!-- Nickname -->
     <string name="prefs_nickname_title">Nickname</string>
