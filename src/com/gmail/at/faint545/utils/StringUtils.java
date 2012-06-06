@@ -47,11 +47,8 @@ public class StringUtils
   
   public static String unixTimeToShortDate(long timeStampInSeconds) {
     Date finishedDate = new Date(timeStampInSeconds*1000);
-    // Calendar date = Calendar.getInstance();
-    // date.setTimeInMillis(timeStampInSeconds*1000);
 
     Date now = new Date();
-    // Calendar now = Calendar.getInstance();
     SimpleDateFormat formatter;
 
     if(finishedDate.getMonth() == now.getMonth() &&
