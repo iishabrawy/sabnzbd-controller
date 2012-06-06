@@ -14,7 +14,6 @@ import android.os.IBinder;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.util.Log;
 
 import com.gmail.at.faint545.Remote;
 import com.gmail.at.faint545.activities.ViewRemoteActivity;
@@ -34,7 +33,7 @@ public class RequestReceiver extends Service implements RequestListener {
   public static final int UNREGISTER_CLIENT = -1;
   public static final int REGISTER_CLIENT = 1;
 
-  private static final String LOGTAG = "DownloadService";
+  private static final String LOGTAG = "RequestReceiver";
 
   public RequestReceiver() {
     super();
@@ -82,7 +81,6 @@ public class RequestReceiver extends Service implements RequestListener {
         mClientList.remove(msg.replyTo);
         break;
       default:
-        Log.i(LOGTAG,"handleMessage");
         mRequestRouter.processRequest(Request.fromInt(msg.what), msg.getData());
         break;
       }
