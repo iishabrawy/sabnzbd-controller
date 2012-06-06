@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <dimen name="listview_row_min_height">55dip</dimen>
+    <dimen name="listview_row_min_height">48dip</dimen>
     
 </resources>
