@@ -35,173 +35,181 @@ import com.gmail.at.faint545.adapters.SabAdapter;
 import com.gmail.at.faint545.factories.SabPostFactory;
 import com.gmail.at.faint545.nzo.HistoryItem;
 import com.gmail.at.faint545.nzo.NzoItem;
+import com.gmail.at.faint545.utils.ExceptionHandler;
 import com.gmail.at.faint545.utils.HttpResponseParser;
 
 public class HistoryFragment extends SabListFragment {
-  private static final String LOGTAG = "HistoryFragment";
-  public static final String EXTRA = "extra";
+	private static final String LOGTAG = "HistoryFragment";
+	public static final String EXTRA = "extra";
 
-  private ArrayList<Boolean> checkedPositions = new ArrayList<Boolean>();
+	private ArrayList<Boolean> checkedPositions = new ArrayList<Boolean>();
 
-  private ListView mListView;
-  private HistoryEndlessAdapter mEndlessListAdapter;
+	private ListView mListView;
+	private HistoryEndlessAdapter mEndlessListAdapter;
 
-  // Saves the scrolled position in ListView
-  // and it's offset from top.
-  private int scrolledPosition, offsetFromTop; 
+	// Saves the scrolled position in ListView
+	// and it's offset from top.
+	private int scrolledPosition, offsetFromTop; 
 
-  // Request code to view history details.
-  public static final int VIEW = R.id.view__history_details >> 17;
+	// Request code to view history details.
+	public static final int VIEW = R.id.view__history_details >> 17;
 
-  private HistoryFragment() {}
+	private HistoryFragment() {}
 
-  public static HistoryFragment getInstance(Remote remote) {    
-    HistoryFragment fragment = new HistoryFragment();
-    Bundle args = new Bundle();
-    args.putParcelable(EXTRA, remote);
-    fragment.setArguments(args);
-    return fragment;
-  }
+	public static HistoryFragment getInstance(Remote remote) {    
+		HistoryFragment fragment = new HistoryFragment();
+		Bundle args = new Bundle();
+		args.putParcelable(EXTRA, remote);
+		fragment.setArguments(args);
+		return fragment;
+	}
 
-  @Override
-  public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View view = inflater.inflate(layout.history, null);
-    mListView = (ListView) view.findViewById(android.R.id.list);
-    return view;
-  }
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		View view = inflater.inflate(layout.history, null);
+		mListView = (ListView) view.findViewById(android.R.id.list);
+		return view;
+	}
 
-  @Override
-  public void onActivityCreated(Bundle savedInstanceState) {
-    SabAdapter mListAdapter = new HistoryAdapter(getActivity(), layout.history_row, new ArrayList<NzoItem>(),
-        checkedPositions);
-    mEndlessListAdapter = new HistoryEndlessAdapter(getActivity(),mListAdapter,R.layout.endless_row);
-    mListView.setAdapter(mEndlessListAdapter);
-    super.onActivityCreated(savedInstanceState);
-  }
+	@Override
+	public void onActivityCreated(Bundle savedInstanceState) {
+		SabAdapter mListAdapter = new HistoryAdapter(getActivity(), layout.history_row, new ArrayList<NzoItem>(),
+				checkedPositions);
+		mEndlessListAdapter = new HistoryEndlessAdapter(getActivity(),mListAdapter,R.layout.endless_row);
+		mListView.setAdapter(mEndlessListAdapter);
+		super.onActivityCreated(savedInstanceState);
+	}
 
-  @Override
-  public void onListItemClick(ListView l, View v, int position, long id) {
-    Activity activity = getActivity();
-    Intent intent = new Intent(activity,HistoryDetailsActivity.class); 
-    intent.putExtra(HistoryDetailsActivity.KEY, (NzoItem) getListAdapter().getItem(position));
-    activity.startActivityForResult(intent,VIEW);
-    activity.overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
-  }
+	@Override
+	public void onListItemClick(ListView l, View v, int position, long id) {
+		Activity activity = getActivity();
+		Intent intent = new Intent(activity,HistoryDetailsActivity.class); 
+		intent.putExtra(HistoryDetailsActivity.KEY, (NzoItem) getListAdapter().getItem(position));
+		activity.startActivityForResult(intent,VIEW);
+		activity.overridePendingTransition(R.anim.slide_enter_right, R.anim.slide_exit_left);
+	}
 
-  @Override
-  public void updateItems(List<NzoItem> items) {
-    getListAdapter().clearData();
-    mEndlessListAdapter.reset();
-    // Re-create checked positions when new data
-    // arrives.
-    checkedPositions.clear();
-    for(int i = 0, max = getListAdapter().getCount(); i < max; i++) {
-      checkedPositions.add(false);
-    }
+	@Override
+	public void updateItems(List<NzoItem> items) {
+		getListAdapter().clearData();
+		mEndlessListAdapter.reset();
+		// Re-create checked positions when new data
+		// arrives.
+		checkedPositions.clear();
+		for(int i = 0, max = getListAdapter().getCount(); i < max; i++) {
+			checkedPositions.add(false);
+		}
 
-    getListAdapter().notifyDataSetChanged();
-  }
+		getListAdapter().notifyDataSetChanged();
+	}
 
-  @Override
-  public void resetAdapter() {
-    getListAdapter().reset();
-  }
+	@Override
+	public void resetAdapter() {
+		getListAdapter().reset();
+	}
 
-  @Override
-  public void onPause() {
-    scrolledPosition = mListView.getFirstVisiblePosition();
-    View firstVisibleChild = mListView.getChildAt(0);
-    offsetFromTop = (firstVisibleChild == null) ? 0 : firstVisibleChild.getTop();
-    resetAdapter();
-    super.onPause();
-  }
+	@Override
+	public void onPause() {
+		scrolledPosition = mListView.getFirstVisiblePosition();
+		View firstVisibleChild = mListView.getChildAt(0);
+		offsetFromTop = (firstVisibleChild == null) ? 0 : firstVisibleChild.getTop();
+		resetAdapter();
+		super.onPause();
+	}
 
-  @Override
-  public void onResume() {
-    mListView.setSelectionFromTop(scrolledPosition, offsetFromTop);    
-    super.onResume();
-  }
+	@Override
+	public void onResume() {
+		mListView.setSelectionFromTop(scrolledPosition, offsetFromTop);    
+		super.onResume();
+	}
 
-  @Override
-  public void inflateActionModeMenu(ActionMode mode, Menu menu) {
-    return;
-  }
+	@Override
+	public void inflateActionModeMenu(ActionMode mode, Menu menu) {
+		return;
+	}
 
-  @Override
-  public Remote getRemote() {
-    return getArguments().getParcelable(EXTRA);
-  }
+	@Override
+	public Remote getRemote() {
+		return getArguments().getParcelable(EXTRA);
+	}
 
-  @Override
-  public SabAdapter getListAdapter() {    
-    return (SabAdapter) mEndlessListAdapter.getWrappedAdapter();
-  }
+	@Override
+	public SabAdapter getListAdapter() {    
+		return (SabAdapter) mEndlessListAdapter.getWrappedAdapter();
+	}
 
-  private class HistoryEndlessAdapter extends EndlessAdapter {
+	private class HistoryEndlessAdapter extends EndlessAdapter {
 
-    private static final String LOGTAG = "HistoryEndlessAdapter";
-    private List<NzoItem> cache = new ArrayList<NzoItem>();
+		private static final String LOGTAG = "HistoryEndlessAdapter";
+		private List<NzoItem> cache = new ArrayList<NzoItem>();
 
-    private int mOffset = 0;
+		private int mOffset = 0;
 
-    public HistoryEndlessAdapter(Context context, ListAdapter wrapped,
-        int pendingResource) {
-      super(context, wrapped, pendingResource);
-    }
+		public HistoryEndlessAdapter(Context context, ListAdapter wrapped,
+				int pendingResource) {
+			super(context, wrapped, pendingResource);
+		}
 
-    public HistoryEndlessAdapter(ListAdapter wrapped) {
-      super(wrapped);
-    }
+		public HistoryEndlessAdapter(ListAdapter wrapped) {
+			super(wrapped);
+		}
 
-    @Override
-    protected boolean cacheInBackground() {
-      // Execute the request.      
-      HttpClient client = new DefaultHttpClient();
-      HttpPost post = SabPostFactory.getHistoryInstance(getRemote(),mOffset);
+		@Override
+		protected boolean cacheInBackground() {
+			// Get the proper HttpPost      
+			HttpClient client = new DefaultHttpClient();
+			HttpPost post = SabPostFactory.getHistoryInstance(getRemote(),mOffset);
 
-      // We add 11 because we only show 10 items at a time, and next time,
-      // we want to to begin loading from +1 where we left off. 
-      mOffset += 11; 
+			// We add 11 because we only show 10 items at a time, and next time,
+			// we want to to begin loading from +1 where we left off. 
+			mOffset += 11; 
 
-      try {
-        // Get the response/result.
-        HttpResponse response = client.execute(post);
-        String result = HttpResponseParser.parseResponse(response);
+			try {
+				// Execute the HttpPost
+				HttpResponse response = client.execute(post);
+				String result = HttpResponseParser.parseResponse(response);
 
-        JSONObject object = new JSONObject(result);
-        JSONArray slots = object.getJSONObject("history").getJSONArray("slots");
+				JSONObject object = new JSONObject(result);
+				
+				// Check results
+				if(object.has("history")) {
+					JSONArray slots = object.getJSONObject("history").getJSONArray("slots");
+					for(int i = 0, max = slots.length(); i < max; i++) {
+						cache.add(new HistoryItem().buildFromJson(slots.getJSONObject(i)));
+					}
+					return cache.size() > 0;
+				}
+				else if(object.has("error")) {
+					getSabActivity().showErrorDialog("SABNzbd says: " + object.getString("error"));
+					return false;
+				}
+			}
+			catch(JSONException e) {
+				e.printStackTrace();
+			} 
+			catch (ClientProtocolException e) {        
+				e.printStackTrace();
+			}
+			catch (IOException e) {
+				getSabActivity().showErrorDialog(ExceptionHandler.translate(e));
+				e.printStackTrace();
+			}
+			return false;
+		}
 
-        for(int i = 0, max = slots.length(); i < max; i++) {
-          cache.add(new HistoryItem().buildFromJson(slots.getJSONObject(i)));
-        }
-        return cache.size() > 0;
-      }
-      catch(JSONException e) {        
-        e.printStackTrace();
-      } 
-      catch (ClientProtocolException e) {        
-        e.printStackTrace();
-      }
-      catch (IOException e) {
-        // getSabActivity().showErrorDialog("Connection failed.");
-        e.printStackTrace();
-      }
-      return false;
-    }
+		@Override
+		protected void appendCachedData() {
+			SabAdapter adapter = (SabAdapter) getWrappedAdapter();
+			for(NzoItem item : cache) {
+				adapter.add(item);
+			}
+			cache.clear();
+			adapter.notifyDataSetChanged();
+		}
 
-    @Override
-    protected void appendCachedData() {
-      SabAdapter adapter = (SabAdapter) getWrappedAdapter();
-      for(NzoItem item : cache) {
-        adapter.add(item);
-      }
-      cache.clear();
-      adapter.notifyDataSetChanged();
-    }
-
-    public void reset() {
-      mOffset = 0;
-      super.reset();
-    }    
-  }
+		public void reset() {
+			mOffset = 0;
+			super.reset();
+		}    
+	}
 }
