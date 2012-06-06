@@ -1,5 +1,6 @@
 package com.gmail.at.faint545.views;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
@@ -22,6 +23,7 @@ public class InputDialogBuilder extends AlertDialog.Builder implements DialogInt
     public void onClick(String result, DialogInterface dialog);
   }
   
+  @SuppressLint("NewApi")
   public InputDialogBuilder(Context context, int theme) {
     super(context, theme);
     this.context = context;
