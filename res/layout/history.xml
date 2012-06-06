@@ -18,7 +18,7 @@
 
     <com.gmail.at.faint545.views.StyledTextView
         android:id="@android:id/empty"
-        style="@style/TextView.Empty"
+        style="@style/TextAppearance.Empty"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="center"

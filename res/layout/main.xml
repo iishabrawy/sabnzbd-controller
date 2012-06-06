@@ -23,7 +23,7 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:text="@string/remote_empty"
-        style="@style/TextView.Empty"
+        style="@style/TextAppearance.Empty"
         sabnzbd:fontface="fonts/Roboto-Condensed.ttf"/>
 
 </LinearLayout>

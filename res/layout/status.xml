@@ -13,6 +13,6 @@
         sabnzbd:fontface="fonts/Roboto-Condensed.ttf"
         android:gravity="center"
         android:text="@string/status_empty"
-        style="@style/TextView.Empty"/>
+        style="@style/TextAppearance.Empty"/>
 
 </LinearLayout>

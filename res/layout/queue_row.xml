@@ -3,8 +3,8 @@
     android:id="@+id/queue_row_root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:minHeight="@dimen/listview_row_min_height">
+    android:minHeight="@dimen/listview_row_min_height"
+    android:orientation="vertical" >
 
     <com.gmail.at.faint545.views.IndependentCheckBox
         android:id="@+id/queue_row_checkbox"
@@ -16,21 +16,21 @@
         android:focusable="false"
         android:gravity="top" />
 
-    <TextView
+    <com.gmail.at.faint545.views.StyledTextView
         android:id="@+id/queue_row_filename"
+        style="@style/TextAppearance.Medium"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="2dp"
-        android:layout_toRightOf="@+id/queue_row_checkbox"
-        android:textAppearance="@android:style/TextAppearance.Medium" />
+        android:layout_toRightOf="@+id/queue_row_checkbox" />
 
-    <TextView
+    <com.gmail.at.faint545.views.StyledTextView
         android:id="@+id/queue_row_timeleft"
+        style="@style/TextAppearance.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/queue_row_filename"
-        android:layout_toRightOf="@+id/queue_row_checkbox"
-        android:textAppearance="@android:style/TextAppearance.Small" />
+        android:layout_toRightOf="@+id/queue_row_checkbox" />
 
     <ProgressBar
         android:id="@+id/queue_row_progress"

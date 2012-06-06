@@ -2,25 +2,24 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal"
+    android:gravity="center_vertical"
     android:minHeight="@dimen/listview_row_min_height"
-    android:gravity="center_vertical">
+    android:orientation="horizontal" >
 
-    <TextView
+    <com.gmail.at.faint545.views.StyledTextView
         android:id="@+id/history_details_row_title"
+        style="@style/TextAppearance.Small.Bold"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="6dp"
-        android:textAppearance="@android:style/TextAppearance.Small"
-        android:textStyle="bold" />
+        android:padding="6dp" />
 
-    <TextView
+    <com.gmail.at.faint545.views.StyledTextView
         android:id="@+id/history_details_row_value"
+        style="@style/TextAppearance.Small"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:padding="6dp"
-        android:textAppearance="@android:style/TextAppearance.Small" />
+        android:padding="6dp" />
 
 </LinearLayout>
