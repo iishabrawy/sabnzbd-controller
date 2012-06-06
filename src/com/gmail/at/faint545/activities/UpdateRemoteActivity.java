@@ -37,6 +37,7 @@ public class UpdateRemoteActivity extends SherlockPreferenceActivity implements 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);		
+		setTitle(R.string.title_update_remote);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getListView().setCacheColorHint(0x00000000); // Set cache color hint to transparent.
 		addPreferencesFromResource(R.xml.remote_preference); // We still use this for compatibility.
@@ -94,7 +95,6 @@ public class UpdateRemoteActivity extends SherlockPreferenceActivity implements 
 		mPasswordPref.setOnPreferenceChangeListener(this);
 		mPasswordPref.getEditText().setTransformationMethod(new PasswordTransformationMethod());
 		mPasswordPref.setText(mRemote.getPreference(Remote.PASSWORD));
-		mPasswordPref.getEditText().setTransformationMethod(new SingleLineTransformationMethod());
 	}
 
 	@Override
