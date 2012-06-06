@@ -88,4 +88,12 @@ public class StringUtils
     String firstLetter = String.valueOf(input.charAt(0));
     return firstLetter.toUpperCase() + input.substring(1);
   }
+  
+  public static String basepath(String pathname) {  	
+  	return pathname.substring(0, pathname.lastIndexOf("."));
+  }
+  
+  public static String extension(String pathname) {  	
+  	return pathname.substring(pathname.lastIndexOf("."),pathname.length());
+  }
 }

@@ -3,7 +3,7 @@
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:minHeight="@dimen/listview_row_min_height">
+    android:minHeight="@dimen/listview_row_min_height" >
 
     <com.gmail.at.faint545.views.IndependentCheckBox
         android:id="@+id/history_row_checkbox"
@@ -15,8 +15,9 @@
         android:focusable="false"
         android:gravity="top" />
 
-    <TextView
+    <com.gmail.at.faint545.views.StyledTextView
         android:id="@+id/history_row_name"
+        style="@style/TextAppearance.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
@@ -24,25 +25,24 @@
         android:layout_toLeftOf="@+id/history_row_status"
         android:layout_toRightOf="@+id/history_row_checkbox"
         android:gravity="top"
-        android:singleLine="true"
-        android:textAppearance="@android:style/TextAppearance.Medium" />
+        android:singleLine="true" />
 
-    <TextView
+    <com.gmail.at.faint545.views.StyledTextView
         android:id="@+id/history_row_size"
+        style="@style/TextAppearance.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignLeft="@+id/history_row_name"
         android:layout_below="@+id/history_row_name"
-        android:singleLine="true"
-        android:textAppearance="@android:style/TextAppearance.Small" />
+        android:singleLine="true" />
 
-    <TextView
+    <com.gmail.at.faint545.views.StyledTextView
         android:id="@+id/history_row_time"
+        style="@style/TextAppearance.Small"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/history_row_name"
-        android:textAppearance="@android:style/TextAppearance.Small" />
+        android:layout_below="@+id/history_row_name" />
 
     <ImageView
         android:id="@+id/history_row_status"

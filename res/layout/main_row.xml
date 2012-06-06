@@ -5,17 +5,16 @@
     android:layout_height="wrap_content"
     android:descendantFocusability="blocksDescendants"
     android:focusable="false"
-    android:orientation="vertical"
-    android:minHeight="@dimen/listview_row_min_height">
+    android:minHeight="@dimen/listview_row_min_height"
+    android:orientation="vertical" >
 
-    <TextView
+    <com.gmail.at.faint545.views.StyledTextView
         android:id="@+id/remote_nick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
         android:paddingLeft="10dip"
-        android:textColor="@android:color/black"
-        android:textAppearance="@android:style/TextAppearance.Large" />
+        style="@style/TextAppearance.Medium"/>
 
     <com.gmail.at.faint545.views.IndependentButton
         android:id="@+id/remote_options"
@@ -23,6 +22,6 @@
         android:layout_height="@dimen/listview_row_min_height"
         android:layout_alignParentRight="true"
         android:background="@drawable/remote_edit_selector"
-        android:src="@drawable/ic_menu_moreoverflow" />  
+        android:src="@drawable/ic_menu_moreoverflow" />
 
 </RelativeLayout>
