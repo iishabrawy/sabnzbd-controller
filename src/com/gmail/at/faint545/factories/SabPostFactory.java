@@ -144,8 +144,8 @@ public class SabPostFactory {
     List<NameValuePair> parameters = new ArrayList<NameValuePair>();
     parameters.add(new BasicNameValuePair("output", "json"));
     parameters.add(new BasicNameValuePair("apikey", remote.getAPIKey()));
-    parameters.add(new BasicNameValuePair("username", remote.getUsername()));
-    parameters.add(new BasicNameValuePair("password", remote.getPassword()));
+    parameters.add(new BasicNameValuePair("ma_username", remote.getUsername()));
+    parameters.add(new BasicNameValuePair("ma_password", remote.getPassword()));
     parameters.add(new BasicNameValuePair("limit", "10"));
     return parameters;
   }
