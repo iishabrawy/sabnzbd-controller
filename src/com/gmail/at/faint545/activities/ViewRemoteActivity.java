@@ -20,6 +20,7 @@ import android.os.RemoteException;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.InputType;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -90,22 +91,14 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 		mRemote = getIntent().getParcelableExtra(EXTRA); // Get data from Intent.		
 		setContentView(R.layout.view_remote);    
 		setupActionBar();    
-		setupPager();
-		downloadData();
+		setupPager();		
 	}
 
 	@Override
 	protected void onStart() {
 		bindToService();
+		scheduleRecurringDownload();
 		super.onStart();
-	}
-
-	public void downloadData() {
-		Intent targetIntent = new Intent();
-		targetIntent.putExtras(buildBaseMessage());
-
-		if(mRemote.hasRefreshInterval()) 
-			startRecurringDownload();
 	}
 
 	/**
@@ -119,15 +112,20 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 	 * Schedule a download (via BroadcastIntent) to execute periodically. 
 	 * Frequency of download is determined by the remote's settings.
 	 */
-	private void startRecurringDownload() {
-		Intent intent = new Intent(getApplicationContext(),AlarmReceiver.class);
+	private void scheduleRecurringDownload() {
+		Intent targetIntent = new Intent();
+		targetIntent.putExtras(buildBaseMessage());
 
-		Calendar downloadTime = Calendar.getInstance(); // When to download
-		downloadTime.setTimeInMillis(downloadTime.getTimeInMillis()+mRemote.getRefreshInterval());
-		mRecurringDownload = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+		if(mRemote.hasRefreshInterval()) {
+			Intent intent = new Intent(getApplicationContext(),AlarmReceiver.class);
 
-		AlarmManager alarms = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP, downloadTime.getTimeInMillis(), mRemote.getRefreshInterval(), mRecurringDownload);
+			Calendar downloadTime = Calendar.getInstance(); // When to download
+			downloadTime.setTimeInMillis(downloadTime.getTimeInMillis()+mRemote.getRefreshInterval());
+			mRecurringDownload = PendingIntent.getBroadcast(getApplicationContext(), 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+			AlarmManager alarms = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+			alarms.setInexactRepeating(AlarmManager.RTC_WAKEUP, downloadTime.getTimeInMillis(), mRemote.getRefreshInterval(), mRecurringDownload);
+		}
 	}
 
 	private void setupActionBar() {
@@ -499,18 +497,33 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 	// Service functions END
 	//////////////////////////////////////////////////
 
+
+
 	@Override
 	protected void onDestroy() {
-		/*
-		 * Cancel any alarms and unregister from bound Service. 
-		 */
-
-		AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-		manager.cancel(mRecurringDownload);	
-		unBindFromService();
+		cancelRecurringAlarm();
+		unBindFromService();		
 		super.onDestroy();
 	}
 
+	@Override
+	protected void onStop() {		
+		cancelRecurringAlarm();
+		unBindFromService();
+		super.onStop();
+	}
+
+	@Override
+	protected void onRestart() {		
+		bindToService();
+		scheduleRecurringDownload();
+		super.onRestart();
+	}
+
+	private void cancelRecurringAlarm() {
+		AlarmManager manager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+		manager.cancel(mRecurringDownload);
+	}
 
 	/**
 	 * When data connection has completed, regardless if it was

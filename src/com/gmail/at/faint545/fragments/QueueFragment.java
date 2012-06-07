@@ -19,6 +19,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,15 +46,19 @@ public class QueueFragment extends SabListFragment {
   private ArrayList<Boolean> checkedPositions = new ArrayList<Boolean>();
   private ListView mListView;
   private QueueEndlessAdapter mEndlessListAdapter;
+  private View mNoConnectionStub; // A View to show when a connection couldn't be established.
 
   private Messenger mMessenger = new Messenger(new Handler() {
 
     @Override
     public void handleMessage(Message msg) {
       switch(msg.what) {
-      case R.id.no_connection:        
-        setNoConnectionVisibility(View.VISIBLE);
+      case R.id.connection_down:      	
+      	onConnectionDown();
         break;
+      case R.id.connection_up:
+      	onConnectionUp();
+      	break;
       }
       super.handleMessage(msg);
     }
@@ -62,7 +67,7 @@ public class QueueFragment extends SabListFragment {
 
   private QueueFragment() {}
 
-  public static QueueFragment getInstance(Remote remote) {
+	public static QueueFragment getInstance(Remote remote) {
     QueueFragment fragment = new QueueFragment();
     Bundle args = new Bundle();
     args.putParcelable(EXTRA, remote);
@@ -86,16 +91,11 @@ public class QueueFragment extends SabListFragment {
     super.onActivityCreated(savedInstanceState);
   }
 
-  @Override
-  public void onListItemClick(ListView l, View v, int position, long id) {
-    super.onListItemClick(l, v, position, id);
-  }
-
   /*
    * Method to update the current adapters data.
    */
   @Override
-  public void updateItems(List<NzoItem> items) {
+  public void updateItems(List<NzoItem> items) {  	
     getListAdapter().clearData();
     getListAdapter().addAll(items);
     
@@ -104,7 +104,7 @@ public class QueueFragment extends SabListFragment {
       checkedPositions.add(false);
     }
     
-    setNoConnectionVisibility(View.GONE);
+    
     mEndlessListAdapter.reset();
     getListAdapter().notifyDataSetChanged();
   }
@@ -132,13 +132,6 @@ public class QueueFragment extends SabListFragment {
   @Override
   public Remote getRemote() {
     return getArguments().getParcelable(EXTRA);
-  }
-
-  private void setNoConnectionVisibility(int visibility) {
-    View view = getView().findViewById(R.id.no_connection_stub);
-    if(view != null) {
-      view.setVisibility(visibility);
-    }
   }
 
   private class QueueEndlessAdapter extends EndlessAdapter {
@@ -178,9 +171,13 @@ public class QueueFragment extends SabListFragment {
           for(int i = 0, max = slots.length(); i < max; i++) {
             cache.add(new QueueItem().buildFromJson(slots.getJSONObject(i)));
           }
+          
+          onConnectionUp();
           return cache.size() > 0;
         }
-        else {
+        else if(object.has("error")) {
+        	onConnectionDown();
+        	getSabActivity().showErrorDialog("SABNzbd says: " + object.getString("error"));
           return false;
         }
       }
@@ -191,18 +188,33 @@ public class QueueFragment extends SabListFragment {
         e.printStackTrace();
       } 
       catch (IOException e) {
-        try {
-          Message m = Message.obtain();
-          m.what = R.id.no_connection;
-          mMessenger.send(m);
-        } 
-        catch (RemoteException re) {
-          re.printStackTrace();
-        }
+      	onConnectionDown();
         e.printStackTrace();
-      }
+      } 
       return false;
     }
+    
+		private void onConnectionUp() {
+			try {
+				Message m = Message.obtain();
+				m.what = R.id.connection_up;
+				mMessenger.send(m);
+			} 
+			catch (RemoteException e) {
+				e.printStackTrace();
+			}
+		}
+
+		private void onConnectionDown() {
+			try {
+				Message m = Message.obtain();
+				m.what = R.id.connection_down;
+				mMessenger.send(m);
+			} 
+			catch (RemoteException re) {
+				re.printStackTrace();
+			}
+		}    
 
     @Override
     protected void appendCachedData() {
