@@ -8,3 +8,5 @@ gen/
 *.project
 *.apk
 *.properties
+lint.xml
+.settings/
