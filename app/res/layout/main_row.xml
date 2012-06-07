@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/main_row_root"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/listview_selector"
+    android:descendantFocusability="blocksDescendants"
+    android:focusable="false"
+    android:minHeight="@dimen/listview_row_min_height"
+    android:orientation="vertical" >
+
+    <com.gmail.at.faint545.views.StyledTextView
+        android:id="@+id/remote_nick"
+        style="@style/TextAppearance.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:paddingLeft="10dip" />
+
+    <com.gmail.at.faint545.views.IndependentButton
+        android:id="@+id/remote_options"
+        android:layout_width="@dimen/listview_row_min_height"
+        android:layout_height="@dimen/listview_row_min_height"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/remote_edit_selector"
+        android:src="@drawable/ic_menu_moreoverflow" />
+
+</RelativeLayout>

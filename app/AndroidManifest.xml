@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.gmail.at.faint545"
+    android:versionCode="8"
+    android:versionName="1.0-PRERELEASE" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="15" />
+
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+
+    <supports-screens android:largestWidthLimitDp="350" >
+    </supports-screens>
+
+    <application
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name" >
+        
+        <!-- Backup API -->
+        <meta-data
+            android:name="com.google.android.backup.api_key"
+            android:value="AEdPqrEAAAAIVqgbrbAttXnWPghjvuaGAf8cd1gN35IG07gIKg" />
+
+        <activity
+            android:name=".activities.MainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:icon="@drawable/ic_launcher"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.Sabnzbd" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activities.UpdateRemoteActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Sabnzbd"
+            android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name=".activities.ViewRemoteActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Sabnzbd" />
+        <activity
+            android:name=".activities.HistoryDetailsActivity"
+            android:excludeFromRecents="true"
+            android:theme="@style/Theme.Sabnzbd" >
+        </activity>
+
+        <receiver android:name=".receivers.AlarmReceiver" >
+        </receiver>
+
+        <service android:name=".services.RequestReceiver" >
+        </service>
+    </application>
+
+</manifest>
