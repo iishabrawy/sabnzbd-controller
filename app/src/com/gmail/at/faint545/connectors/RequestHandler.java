@@ -1,5 +1,6 @@
 package com.gmail.at.faint545.connectors;
 
+import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.HttpPost;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -11,6 +12,7 @@ import com.gmail.at.faint545.Remote;
 import com.gmail.at.faint545.factories.SabPostFactory;
 import com.gmail.at.faint545.services.SabTask;
 import com.gmail.at.faint545.services.SabTask.SabTaskListener;
+import com.gmail.at.faint545.status.ResultStatus;
 
 /**
  * This RequestHandler will actually the work for each
@@ -29,6 +31,7 @@ public class RequestHandler implements SabTaskListener {
     public void onQueueReceived(JSONArray queue);
     public void onHistoryReceived(JSONArray queue);
     public void onStatusReceived(boolean status);
+    public void onErrorReceived(String message);
   }
 
   public RequestHandler(Remote remote, Object callback) {
@@ -153,7 +156,18 @@ public class RequestHandler implements SabTaskListener {
   }
 
   @Override
-  public void onTaskCompleted(String results) {
+  public void onTaskCompleted(ResultStatus<String> status) {
+  	switch(status.code) {
+  	case HttpStatus.SC_OK:
+  		processResult(status.data);
+  		break;
+  	case HttpStatus.SC_SERVICE_UNAVAILABLE:
+  		mCallback.onErrorReceived(status.data);
+  		break;
+  	}
+  }
+
+	private void processResult(String results) {
     try {
       JSONObject resultObject = new JSONObject(results);
       if(resultObject.has("queue")) {

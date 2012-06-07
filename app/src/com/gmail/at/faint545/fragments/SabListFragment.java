@@ -45,12 +45,12 @@ public abstract class SabListFragment extends SherlockListFragment {
 
 	public abstract SabAdapter getListAdapter();
 
-	protected void onConnectionUp() {
+	public void onConnectionUp() {
 		if(mNoConnectionStub != null)
 			mNoConnectionStub.setVisibility(View.GONE);
 	}
 
-	protected void onConnectionDown() {
+	public void onConnectionDown() {
 		if(mNoConnectionStub == null)
 			mNoConnectionStub = getView().findViewById(R.id.no_connection_stub);
 		

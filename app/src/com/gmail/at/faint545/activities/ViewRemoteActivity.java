@@ -587,10 +587,10 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 		return mMessenger;
 	}
 
-	public class IncomingHandler extends Handler {
-
+	public class IncomingHandler extends Handler {		
 		@Override
 		public void handleMessage(Message msg) {
+			onFinishConnection();
 			switch(msg.what) {
 			case QUEUE:
 				List<NzoItem> newData = (List<NzoItem>) msg.obj;
@@ -605,14 +605,8 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 			case STATUS:
 				break;
 			case ERROR:
-				if(errorDialog == null) {
-					errorDialog = AlertDialogFactory.getErrorInstance(ViewRemoteActivity.this);
-				}
-
-				if(!errorDialog.isShowing()) {
-					errorDialog.setMessage(msg.obj.toString());
-					errorDialog.show();
-				}
+				mQueueFragment.onConnectionDown();
+				mHistoryFragment.onConnectionDown();
 				break;
 			}
 			super.handleMessage(msg);

@@ -132,4 +132,12 @@ public class RequestReceiver extends Service implements RequestListener {
     m.what = ViewRemoteActivity.STATUS;
     sendMessage(m);
   }
+
+	@Override
+  public void onErrorReceived(String message) {
+		Message m = Message.obtain();
+		m.obj = message;
+		m.what = ViewRemoteActivity.ERROR;
+		sendMessage(m);
+  }
 }
