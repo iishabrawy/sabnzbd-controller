@@ -24,6 +24,8 @@ import android.os.RemoteException;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -41,7 +43,7 @@ import com.gmail.at.faint545.nzo.HistoryItem;
 import com.gmail.at.faint545.nzo.NzoItem;
 import com.gmail.at.faint545.utils.HttpResponseParser;
 
-public class HistoryFragment extends SabListFragment {
+public class HistoryFragment extends SabListFragment{
 	private static final String LOGTAG = "HistoryFragment";
 	public static final String EXTRA = "extra";
 
@@ -112,16 +114,19 @@ public class HistoryFragment extends SabListFragment {
 	@Override
 	public void updateItems(List<NzoItem> items) {
 		getListAdapter().clearData();
-		getListAdapter().addAll(items);
+		// getListAdapter().addAll(items);
 
 		// Re-create checked positions when new data
 		// arrives.
 		checkedPositions.clear();
-		for(int i = 0, max = getListAdapter().getCount(); i < max; i++) {
-			checkedPositions.add(false);
-		}
+//		for(int i = 0, max = getListAdapter().getCount(); i < max; i++) {
+//			checkedPositions.add(false);
+//		}
 
-		setNoConnectionVisibility(View.GONE);
+    if(!isConnectionUp()) {
+      onConnectionUp();
+    }
+		
 		mEndlessListAdapter.reset();		
 		getListAdapter().notifyDataSetChanged();
 	}
@@ -161,13 +166,6 @@ public class HistoryFragment extends SabListFragment {
 		return (SabAdapter) mEndlessListAdapter.getWrappedAdapter();
 	}
 
-	private void setNoConnectionVisibility(int visibility) {
-		View view = getView().findViewById(R.id.no_connection_stub);
-		if(view != null) {
-			view.setVisibility(visibility);
-		}
-	}
-
 	private class HistoryEndlessAdapter extends EndlessAdapter {
 
 		private static final String LOGTAG = "HistoryEndlessAdapter";
@@ -185,7 +183,7 @@ public class HistoryFragment extends SabListFragment {
 		}
 
 		@Override
-		protected boolean cacheInBackground() {
+		protected boolean cacheInBackground() {		  
 			// Get the proper HttpPost      
 			HttpClient client = new DefaultHttpClient();
 			HttpPost post = SabPostFactory.getHistoryInstance(getRemote(),mOffset);
