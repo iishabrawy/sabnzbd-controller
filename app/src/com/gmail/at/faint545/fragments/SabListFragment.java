@@ -59,4 +59,25 @@ public abstract class SabListFragment extends SherlockListFragment {
 		else
 			throw new NullPointerException("You must use a View with an ID of R.id.no_connection_stub");
 	}
+	
+	public boolean isConnectionUp() {
+	  return mIsConnectionUp;
+	}
+	
+  @Override
+  public void onScrollStateChanged(AbsListView view, int scrollState) {
+    if(scrollState != SCROLL_STATE_IDLE)
+      mListIsScrolling = true;
+    else 
+      mListIsScrolling = false;
+  }
+  
+  @Override
+  public void onScroll(AbsListView view, int firstVisibleItem,
+      int visibleItemCount, int totalItemCount) {    
+  }
+  
+  public boolean isListScrolling() {
+    return mListIsScrolling;
+  }
 }
