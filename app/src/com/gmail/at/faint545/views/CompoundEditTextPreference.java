@@ -6,7 +6,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.DialogPreference;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -45,6 +44,11 @@ public class CompoundEditTextPreference extends DialogPreference {
 	}
 
 	@Override
+  protected void showDialog(Bundle state) {
+	  super.showDialog(state);
+  }
+
+  @Override
 	protected void onBindDialogView(View view) {
 		mEditText.setText(mText);
 		mButton.setText(mCompoundButtonText);
