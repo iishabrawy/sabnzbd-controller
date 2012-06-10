@@ -19,7 +19,6 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Messenger;
 import android.os.RemoteException;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,9 +27,9 @@ import android.widget.ListView;
 
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
-import com.commonsware.cwac.endless.EndlessAdapter;
 import com.gmail.at.faint545.R;
 import com.gmail.at.faint545.Remote;
+import com.gmail.at.faint545.adapters.EndlessAdapter;
 import com.gmail.at.faint545.adapters.QueueAdapter;
 import com.gmail.at.faint545.adapters.SabAdapter;
 import com.gmail.at.faint545.factories.SabPostFactory;

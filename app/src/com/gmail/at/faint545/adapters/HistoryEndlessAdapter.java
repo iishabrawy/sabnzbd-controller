@@ -3,7 +3,6 @@ package com.gmail.at.faint545.adapters;
 import android.content.Context;
 import android.util.Log;
 import android.widget.ListAdapter;
-import com.commonsware.cwac.endless.EndlessAdapter;
 
 public class HistoryEndlessAdapter extends EndlessAdapter {
 
