@@ -12,6 +12,9 @@
 <!--     <item type="id" name="retry_history"/> -->
 <!--     <item type="id" name="set_speed"/> -->
     
+    <!-- IDs used to determine if a connection is up or down. -->
     <item type="id" name="connection_down"/>
     <item type="id" name="connection_up"/>
+    
+    <item type="id" name="show_dialog"/>
 </resources>

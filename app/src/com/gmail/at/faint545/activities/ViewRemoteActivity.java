@@ -20,7 +20,6 @@ import android.os.RemoteException;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.InputType;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.animation.Animation;
@@ -36,7 +35,6 @@ import com.gmail.at.faint545.R;
 import com.gmail.at.faint545.Remote;
 import com.gmail.at.faint545.adapters.ViewRemotePagerAdapter;
 import com.gmail.at.faint545.connectors.RequestHandler.Request;
-import com.gmail.at.faint545.factories.AlertDialogFactory;
 import com.gmail.at.faint545.fragments.HistoryFragment;
 import com.gmail.at.faint545.fragments.QueueFragment;
 import com.gmail.at.faint545.fragments.SabListFragment;
@@ -87,18 +85,13 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 
 	@Override
 	protected void onCreate(Bundle bundle) {
-		super.onCreate(bundle);    
+		super.onCreate(bundle);
+		bindToService();
 		mRemote = getIntent().getParcelableExtra(EXTRA); // Get data from Intent.		
 		setContentView(R.layout.view_remote);    
-		setupActionBar();    
-		setupPager();		
-	}
-
-	@Override
-	protected void onStart() {
-		bindToService();
+		setupActionBar();
+		setupPager();
 		scheduleRecurringDownload();
-		super.onStart();
 	}
 
 	/**
@@ -497,27 +490,11 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 	// Service functions END
 	//////////////////////////////////////////////////
 
-
-
 	@Override
 	protected void onDestroy() {
 		cancelRecurringAlarm();
 		unBindFromService();		
 		super.onDestroy();
-	}
-
-	@Override
-	protected void onStop() {		
-		cancelRecurringAlarm();
-		unBindFromService();
-		super.onStop();
-	}
-
-	@Override
-	protected void onRestart() {		
-		bindToService();
-		scheduleRecurringDownload();
-		super.onRestart();
 	}
 
 	private void cancelRecurringAlarm() {
@@ -570,19 +547,6 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 		}
 	}
 
-	@Override
-	public void showErrorDialog(CharSequence message) {
-		try {
-			Message m = Message.obtain();
-			m.what = ERROR;
-			m.obj = message;
-			mMessenger.send(m);
-		} 
-		catch (RemoteException e) {
-			e.printStackTrace();
-		}
-	}
-
 	public Messenger getMessenger() {
 		return mMessenger;
 	}
@@ -603,6 +567,10 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 				mHistoryFragment.updateItems(newData);
 				break;
 			case STATUS:
+			  if((Boolean) msg.obj)
+			    Toast.makeText(getApplicationContext(), R.string.success, Toast.LENGTH_SHORT).show();
+			  else
+			    Toast.makeText(getApplicationContext(), R.string.failed, Toast.LENGTH_SHORT).show();
 				break;
 			case ERROR:
 				mQueueFragment.onConnectionDown();

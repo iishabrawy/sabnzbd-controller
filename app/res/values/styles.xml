@@ -8,10 +8,8 @@
         <item name="android:windowBackground">@color/background</item>
         <item name="actionBarStyle">@style/Theme.Sabnzbd.ActionBar.Style</item>
         <item name="android:actionBarStyle">@style/Theme.Sabnzbd.ActionBar.Style</item>
-                      
         <item name="actionBarItemBackground">@drawable/abs__item_selector</item>
         <item name="android:actionBarItemBackground">@drawable/abs__item_selector</item>
-        
         <item name="actionModeStyle">@style/ActionMode</item>
         <item name="android:actionModeStyle">@style/ActionMode</item>
     </style>
@@ -20,7 +18,20 @@
     <style name="Theme.Sabnzbd.ActionBar.Style" parent="Widget.Sherlock.Light.ActionBar.Solid.Inverse">
         <item name="background">@drawable/ab_background</item>
         <item name="android:background">@drawable/ab_background</item>
-        
+        <item name="backgroundSplit">@color/ab_background</item>
+        <item name="android:backgroundSplit">@color/ab_background</item>
+    </style>
+
+    <!-- Base theme w/o accent -->
+    <style name="Theme.Sabnzbd.No.Accent" parent="@style/Theme.Sabnzbd">
+        <item name="actionBarStyle">@style/Theme.Sabnzbd.ActionBar.Style.No.Accent</item>
+        <item name="android:actionBarStyle">@style/Theme.Sabnzbd.ActionBar.Style.No.Accent</item>
+    </style>
+
+    <!-- Default ActionBar style w/o accent -->
+    <style name="Theme.Sabnzbd.ActionBar.Style.No.Accent" parent="@style/Theme.Sabnzbd.ActionBar.Style">
+        <item name="background">@color/ab_background</item>
+        <item name="android:background">@color/ab_background</item>
         <item name="backgroundSplit">@color/ab_background</item>
         <item name="android:backgroundSplit">@color/ab_background</item>
     </style>
@@ -41,7 +52,7 @@
         <item name="android:background">@color/ab_background</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:paddingLeft">6dip</item>
-        <item name="fontface">fonts/Roboto-Bold.ttf</item>        
+        <item name="fontface">fonts/Roboto-Bold.ttf</item>
     </style>
 
     <!-- Custom text styles -->

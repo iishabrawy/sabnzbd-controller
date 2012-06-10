@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">SABNzbd</string>
-    <string name="title_update_remote">Add/Update Remote</string>
+    <string name="app_name">SABNzbd</string>    
     <string name="general">General</string>
     <string name="auth">Authentication</string>
 
@@ -19,7 +18,7 @@
     </string-array>
 
     <!-- Titles for Activities -->
-    <string name="title__clear_history">Clear History</string>
+    <string name="title_update_remote">Remote Settings</string>
 
     <!-- Titles for dialogs -->
     <string name="title__error">Error</string>

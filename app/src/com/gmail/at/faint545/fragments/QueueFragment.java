@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -45,7 +46,6 @@ public class QueueFragment extends SabListFragment {
   private ArrayList<Boolean> checkedPositions = new ArrayList<Boolean>();
   private ListView mListView;
   private QueueEndlessAdapter mEndlessListAdapter;
-  private View mNoConnectionStub; // A View to show when a connection couldn't be established.
 
   private Messenger mMessenger = new Messenger(new Handler() {
 
@@ -58,6 +58,13 @@ public class QueueFragment extends SabListFragment {
       case R.id.connection_up:
       	onConnectionUp();
       	break;
+      case R.id.show_dialog:
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle(R.string.title__error);
+        builder.setMessage(msg.obj.toString());        
+        builder.setPositiveButton(R.string.ok ,null);
+        builder.create().show();
+        break;
       }
       super.handleMessage(msg);
     }
@@ -96,13 +103,16 @@ public class QueueFragment extends SabListFragment {
   @Override
   public void updateItems(List<NzoItem> items) {  	
     getListAdapter().clearData();
-    getListAdapter().addAll(items);
+    // getListAdapter().addAll(items);    
     
     checkedPositions.clear();
-    for(int i = 0, max = queueItems.size(); i < max; i++) {
-      checkedPositions.add(false);
+//    for(int i = 0, max = queueItems.size(); i < max; i++) {
+//      checkedPositions.add(false);
+//    }
+        
+    if(!isConnectionUp()) {
+      onConnectionUp();
     }
-    
     
     mEndlessListAdapter.reset();
     getListAdapter().notifyDataSetChanged();
@@ -176,7 +186,10 @@ public class QueueFragment extends SabListFragment {
         }
         else if(object.has("error")) {
         	onConnectionDown();
-        	getSabActivity().showErrorDialog("SABNzbd says: " + object.getString("error"));
+        	Message m = Message.obtain();
+        	m.what = R.id.show_dialog;
+        	m.obj = object.get("error");
+        	mMessenger.send(m);
           return false;
         }
       }
@@ -188,6 +201,9 @@ public class QueueFragment extends SabListFragment {
       } 
       catch (IOException e) {
       	onConnectionDown();
+        e.printStackTrace();
+      } 
+      catch (RemoteException e) {
         e.printStackTrace();
       } 
       return false;

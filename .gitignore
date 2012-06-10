@@ -1,12 +1,7 @@
 out/
 bin/
 gen/
-.idea/
-*.iml
-*.eml
 *.classpath
-*.project
 *.apk
-*.properties
 lint.xml
 .settings/
