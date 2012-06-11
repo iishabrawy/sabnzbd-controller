@@ -3,8 +3,6 @@ package com.gmail.at.faint545.views;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.DialogPreference;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -12,8 +10,8 @@ import android.widget.EditText;
 
 import com.gmail.at.faint545.R;
 
-public class CompoundEditTextPreference extends DialogPreference {
-
+public class CompoundEditTextPreference extends SabEditTextPreference {
+	
 	private EditText mEditText;	
 	private Button mButton;
 	private String mText;
@@ -42,12 +40,7 @@ public class CompoundEditTextPreference extends DialogPreference {
 		mButton = (Button) root.findViewById(R.id.button);
 		return root;
 	}
-
-	@Override
-  protected void showDialog(Bundle state) {
-	  super.showDialog(state);
-  }
-
+	
   @Override
 	protected void onBindDialogView(View view) {
 		mEditText.setText(mText);
