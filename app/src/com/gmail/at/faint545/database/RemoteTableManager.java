@@ -48,6 +48,7 @@ public class RemoteTableManager {
     while(cursor.moveToNext()) {
       remotes.add(cursorToRemote(cursor));
     }
+    cursor.close();
     return remotes;
   }
 
