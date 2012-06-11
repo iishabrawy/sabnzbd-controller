@@ -1,10 +1,11 @@
+# Mac OSX Finder and whatnot
+.DS_Store
+
+# IntelliJ IDEA stuff
 out/
-bin/
+.idea/
+*.iml
+
+# Android stuff
 gen/
-libraries/
-.settings/
-*.classpath
 *.apk
-*.project
-project.properties
-lint.xml
