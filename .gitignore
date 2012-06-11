@@ -1,7 +1,10 @@
 out/
 bin/
 gen/
+libraries/
+.settings/
 *.classpath
 *.apk
+*.project
+project.properties
 lint.xml
-.settings/
