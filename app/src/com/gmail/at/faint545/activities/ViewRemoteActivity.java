@@ -1,22 +1,10 @@
 package com.gmail.at.faint545.activities;
 
-import java.util.Calendar;
-import java.util.List;
-
 import android.app.AlarmManager;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.Message;
-import android.os.Messenger;
-import android.os.RemoteException;
+import android.content.*;
+import android.os.*;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.InputType;
@@ -27,7 +15,6 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.Toast;
-
 import com.actionbarsherlock.view.ActionMode;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
@@ -45,6 +32,8 @@ import com.gmail.at.faint545.services.RequestReceiver;
 import com.gmail.at.faint545.views.InputDialogBuilder;
 import com.gmail.at.faint545.views.ProgressDialog;
 import com.viewpagerindicator.TitlePageIndicator;
+import java.util.Calendar;
+import java.util.List;
 
 public class ViewRemoteActivity extends SabFragmentActivity implements CheckChangedListener, ServiceConnection {
 
@@ -88,7 +77,7 @@ public class ViewRemoteActivity extends SabFragmentActivity implements CheckChan
 		super.onCreate(bundle);
 		bindToService();
 		mRemote = getIntent().getParcelableExtra(EXTRA); // Get data from Intent.		
-		setContentView(R.layout.view_remote);    
+		setContentView(R.layout.view_remote);
 		setupActionBar();
 		setupPager();
 		scheduleRecurringDownload();
