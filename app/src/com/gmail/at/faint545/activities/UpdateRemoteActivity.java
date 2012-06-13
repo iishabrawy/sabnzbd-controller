@@ -2,7 +2,6 @@ package com.gmail.at.faint545.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -20,6 +19,7 @@ import com.gmail.at.faint545.Remote;
 import com.gmail.at.faint545.database.RemoteTableManager;
 import com.gmail.at.faint545.utils.StringUtils;
 import com.gmail.at.faint545.views.CompoundEditTextPreference;
+import com.gmail.at.faint545.views.SabEditTextPreference;
 import com.gmail.at.faint545.zxing.IntentIntegrator;
 import com.gmail.at.faint545.zxing.IntentResult;
 
@@ -28,7 +28,11 @@ public class UpdateRemoteActivity extends SherlockPreferenceActivity implements 
 	public static final String KEY_REMOTE = "remote";
 	private static final String LOGTAG = "UpdateRemoteActivity";
 
-	private EditTextPreference mNicknamePref,mHostPref,mPortPref,mUsernamePref,mPasswordPref;
+	private SabEditTextPreference mNicknamePref;
+    private SabEditTextPreference mHostPref;
+    private SabEditTextPreference mPortPref;
+    private SabEditTextPreference mUsernamePref;
+    private SabEditTextPreference mPasswordPref;
 	private CompoundEditTextPreference mAPIKeyPref;
 	private ListPreference mRefreshIntervalPref;
 	private Remote mRemote;
@@ -52,17 +56,17 @@ public class UpdateRemoteActivity extends SherlockPreferenceActivity implements 
 	 */
 	@SuppressWarnings("deprecation")
 	private void setupPreferences() {
-		mNicknamePref = (EditTextPreference) findPreference("nickname");
+		mNicknamePref = (SabEditTextPreference) findPreference("nickname");
 		mNicknamePref.setOnPreferenceChangeListener(this);
 		mNicknamePref.setText(mRemote.getPreference(Remote.NICKNAME));
 		mNicknamePref.getEditText().setTransformationMethod(new SingleLineTransformationMethod());
 
-		mHostPref = (EditTextPreference) findPreference("host");
+		mHostPref = (SabEditTextPreference) findPreference("host");
 		mHostPref.setOnPreferenceChangeListener(this);
 		mHostPref.setText(mRemote.getPreference(Remote.HOST));
 		mHostPref.getEditText().setTransformationMethod(new SingleLineTransformationMethod());
 
-		mPortPref = (EditTextPreference) findPreference("port");
+		mPortPref = (SabEditTextPreference) findPreference("port");
 		mPortPref.setOnPreferenceChangeListener(this);	
 		mPortPref.getEditText().setInputType(InputType.TYPE_CLASS_NUMBER);
 		mPortPref.setText(mRemote.getPreference(Remote.PORT));
@@ -86,12 +90,12 @@ public class UpdateRemoteActivity extends SherlockPreferenceActivity implements 
 			}
 		});
 
-		mUsernamePref = (EditTextPreference) findPreference("username");
+		mUsernamePref = (SabEditTextPreference) findPreference("username");
 		mUsernamePref.setOnPreferenceChangeListener(this);
 		mUsernamePref.setText(mRemote.getPreference(Remote.USERNAME));
 		mUsernamePref.getEditText().setTransformationMethod(new SingleLineTransformationMethod());
 
-		mPasswordPref = (EditTextPreference) findPreference("password");
+		mPasswordPref = (SabEditTextPreference) findPreference("password");
 		mPasswordPref.setOnPreferenceChangeListener(this);
 		mPasswordPref.getEditText().setTransformationMethod(new PasswordTransformationMethod());
 		mPasswordPref.setText(mRemote.getPreference(Remote.PASSWORD));
@@ -107,7 +111,7 @@ public class UpdateRemoteActivity extends SherlockPreferenceActivity implements 
 	public boolean onOptionsItemSelected(MenuItem item) {
 		switch(item.getItemId()) {
 		case R.id.menu_save:
-			if(validatePreferences()) {
+			if(isValidPreferences()) {
 				RemoteTableManager tm = new RemoteTableManager(this);
 				tm.open();
 				boolean result = tm.insertOrUpdate(mRemote);
@@ -129,7 +133,7 @@ public class UpdateRemoteActivity extends SherlockPreferenceActivity implements 
 	 * Verifies that the preferences match the requirements or
 	 * constraints of the back-end data store. 
 	 */
-	private boolean validatePreferences() {
+	private boolean isValidPreferences() {
 		boolean case1 = StringUtils.isEmpty(mNicknamePref.getText());
 		boolean case2 = StringUtils.isEmpty(mHostPref.getText());
 		boolean case3 = StringUtils.isEmpty(mPortPref.getText());
