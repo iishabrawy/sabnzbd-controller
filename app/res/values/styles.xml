@@ -10,7 +10,7 @@
         <item name="android:actionBarItemBackground">@drawable/abs__item_selector</item>
         <item name="actionModeStyle">@style/ActionMode</item>
         <item name="android:actionModeStyle">@style/ActionMode</item>
-        <item name="alertDialogTheme">@style/Theme.Holo.Light.Dialog</item>
+        <item name="alertDialogTheme">@style/Holo.Dialog.Light</item>
     </style>
 
     <!-- Default ActionBar style -->
