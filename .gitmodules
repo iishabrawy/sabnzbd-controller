@@ -1,3 +1,0 @@
-[submodule "libraries/holowidgets"]
-	path = libraries/holowidgets
-	url = git@bitbucket.org:alexfu/holowidgets.git
