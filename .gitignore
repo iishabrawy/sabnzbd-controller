@@ -7,5 +7,6 @@ out/
 *.iml
 
 # Android stuff
+bin/
 gen/
 *.apk
