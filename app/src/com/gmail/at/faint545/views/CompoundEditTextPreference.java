@@ -91,6 +91,7 @@ public class CompoundEditTextPreference extends SabEditTextPreference {
   		callChangeListener(mText);
   		break;
   	}
+    dialog.dismiss();
   	super.onClick(dialog, which);
   }	
 }
