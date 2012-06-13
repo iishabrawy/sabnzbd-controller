@@ -4,94 +4,115 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.preference.DialogPreference;
+import android.preference.EditTextPreference;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
+import android.view.*;
+import android.text.TextUtils;
 
+import android.widget.EditText;
+import android.widget.TextView;
 import com.alexfu.holo.widgets.HoloAlertDialog;
+import com.alexfu.holo.widgets.HoloEditText;
+import com.gmail.at.faint545.R;
 
-public class SabEditTextPreference extends DialogPreference {
+public class SabEditTextPreference extends EditTextPreference {
 
-	private HoloAlertDialog.Builder mBuilder;
+    private HoloEditText mEditText;
 
-	public SabEditTextPreference(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-	}
+    public SabEditTextPreference(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        mEditText = new HoloEditText(context);
+    }
 
-	public SabEditTextPreference(Context context, AttributeSet attrs) {
-		super(context, attrs);
-	}
+    public SabEditTextPreference(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        mEditText = new HoloEditText(context);
+    }
 
-	@Override
-	protected View onCreateDialogView() {
-		int dialogLayoutResource = getDialogLayoutResource();
-		if (dialogLayoutResource == 0) {
-			return null;
-		}
+    public SabEditTextPreference(Context context) {
+        super(context);
+        mEditText = new HoloEditText(context);
+    }
 
-		LayoutInflater inflater = LayoutInflater.from(getContext());
-		return inflater.inflate(dialogLayoutResource, null);
-	}
+    @Override
+    protected View onCreateDialogView() {
+        int layoutResId = getDialogLayoutResource();
+        if(layoutResId == 0) {
+            return null;
+        }
 
-	@Override
-	protected void showDialog(Bundle state) {
-		Context context = getContext();
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        return inflater.inflate(layoutResId,null);
+    }
 
-		mBuilder = new HoloAlertDialog.Builder(context)
-		.setTitle(getDialogTitle())
-		.setIcon(getDialogIcon())
-		.setPositiveButton(getPositiveButtonText(), this)
-		.setNegativeButton(getNegativeButtonText(), this);
+    @Override
+    protected void onBindDialogView(View view) {
+        View dialogMessageView = view.findViewById(android.R.id.message);
+        if (dialogMessageView != null) {
+            final CharSequence message = getDialogMessage();
+            int newVisibility = View.GONE;
 
-		View contentView = onCreateDialogView();
-		if (contentView != null) {
-			onBindDialogView(contentView);
-			mBuilder.setView(contentView);
-		}
-		else {
-			mBuilder.setMessage(getDialogMessage());
-		}
+            if (!TextUtils.isEmpty(message)) {
+                if (dialogMessageView instanceof TextView) {
+                    ((TextView) dialogMessageView).setText(message);
+                }
 
-		onPrepareDialogBuilder(mBuilder);
+                newVisibility = View.VISIBLE;
+            }
 
-		// getPreferenceManager().registerOnActivityDestroyListener(this);
+            if (dialogMessageView.getVisibility() != newVisibility) {
+                dialogMessageView.setVisibility(newVisibility);
+            }
+        }
+        mEditText.setText(getText());
+        ViewParent oldParent = mEditText.getParent();
+        if (oldParent != view) {
+            if (oldParent != null) {
+                ((ViewGroup) oldParent).removeView(mEditText);
+            }
+            onAddEditTextToDialogView(view, mEditText);
+        }
+    }
 
-		// Create the dialog
-		final Dialog dialog = mBuilder.create();
-		if (state != null) {
-			dialog.onRestoreInstanceState(state);
-		}
+    @Override
+    protected void showDialog(Bundle state) {
+        HoloAlertDialog.Builder builder = new HoloAlertDialog.Builder(getContext());
+        builder.setTitle(getDialogTitle());
+        builder.setIcon(getDialogIcon());
+        builder.setPositiveButton(getPositiveButtonText(),this);
+        builder.setNegativeButton(getNegativeButtonText(),this);
 
-		if (needInputMethod()) {
-			requestInputMethod(dialog);
-		}
-		dialog.setOnDismissListener(this);
-		dialog.show();
-	}
-	
-	public void onClick(DialogInterface dialog, int which) {
-		Log.i("SabEditTextPreference",which + "");
-	}
+        View contentView = onCreateDialogView();
+        if(contentView != null) {
+            onBindDialogView(contentView);
+            builder.setView(contentView);
+        }
+        else {
+            builder.setMessage(getDialogMessage());
+        }
 
-	/**
-	 * Sets the required flags on the dialog window to enable input method window to show up.
-	 */
-	private void requestInputMethod(Dialog dialog) {
-		Window window = dialog.getWindow();
-		window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-	}	
+        Dialog dialog = builder.create();
+        dialog.setOnDismissListener(this);
+        dialog.show();
+    }
 
-	/**
-	 * Returns whether the preference needs to display a soft input method when the dialog
-	 * is displayed. Default is false. Subclasses should override this method if they need
-	 * the soft input method brought up automatically.
-	 * @hide
-	 */
-	protected boolean needInputMethod() {
-		return false;
-	}	
+    @Override
+    public void onClick(DialogInterface dialog, int which) {
+        switch(which)	 {
+            case DialogInterface.BUTTON_POSITIVE:
+                String text = getEditText().getText().toString();
+                setText(text);
+                callChangeListener(text);
+                break;
+        }
+        dialog.dismiss();
+    }
+
+    @Override
+    public EditText getEditText() {
+        return mEditText;
+    }
 }

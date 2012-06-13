@@ -8,11 +8,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.alexfu.holo.widgets.HoloEditText;
 import com.gmail.at.faint545.R;
 
 public class CompoundEditTextPreference extends SabEditTextPreference {
 	
-	private EditText mEditText;	
+	private HoloEditText mEditText;
 	private Button mButton;
 	private String mText;
 	
@@ -36,7 +37,7 @@ public class CompoundEditTextPreference extends SabEditTextPreference {
 	@Override
 	protected View onCreateDialogView() {
 		View root = super.onCreateDialogView();
-		mEditText = (EditText) root.findViewById(R.id.edit);
+		mEditText = (HoloEditText) root.findViewById(R.id.edit);
 		mButton = (Button) root.findViewById(R.id.button);
 		return root;
 	}
@@ -91,7 +92,6 @@ public class CompoundEditTextPreference extends SabEditTextPreference {
   		callChangeListener(mText);
   		break;
   	}
-    dialog.dismiss();
   	super.onClick(dialog, which);
   }	
 }
