@@ -4,19 +4,19 @@
     <PreferenceCategory
         android:layout="@layout/prefs_header_general"
         android:title="@string/general" >
-        <EditTextPreference
+        <com.gmail.at.faint545.views.SabEditTextPreference
             android:key="nickname"
             android:layout="@layout/preference_row"
             android:persistent="false"
             android:summary="@string/prefs_nickname_description"
             android:title="@string/prefs_nickname_title"/>
-        <EditTextPreference
+        <com.gmail.at.faint545.views.SabEditTextPreference
             android:key="host"
             android:layout="@layout/preference_row"
             android:persistent="false"
             android:summary="@string/prefs_host_description"
             android:title="@string/prefs_host_title" />
-        <EditTextPreference
+        <com.gmail.at.faint545.views.SabEditTextPreference
             android:key="port"
             android:layout="@layout/preference_row"
             android:persistent="false"
@@ -43,13 +43,13 @@
             android:summary="@string/prefs_apikey_description"
             android:title="@string/prefs_apikey_title" />
 
-        <EditTextPreference
+        <com.gmail.at.faint545.views.SabEditTextPreference
             android:key="username"
             android:layout="@layout/preference_row"
             android:persistent="false"
             android:summary="@string/prefs_username_description"
             android:title="@string/prefs_username_title" />
-        <EditTextPreference
+        <com.gmail.at.faint545.views.SabEditTextPreference
             android:key="password"
             android:layout="@layout/preference_row"
             android:persistent="false"
