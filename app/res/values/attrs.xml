@@ -3,7 +3,9 @@
 
     <declare-styleable name="StyledTextView">
         <attr name="fontface" format="string" />
+        <attr name="textAllCaps" format="boolean"/>
     </declare-styleable>
+
     <declare-styleable name="ListView">
         <attr name="fadingColor" format="color" />
     </declare-styleable>
