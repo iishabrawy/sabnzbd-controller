@@ -3,8 +3,9 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="5dip"
-    android:minHeight="@dimen/listview_row_min_height">
+    android:minHeight="@dimen/listview_row_min_height"
+    android:background="@drawable/listview_selector"
+    android:padding="@dimen/listview_padding">
 
     <com.gmail.at.faint545.views.StyledTextView
         android:id="@android:id/title"

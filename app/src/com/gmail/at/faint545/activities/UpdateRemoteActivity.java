@@ -42,6 +42,7 @@ public class UpdateRemoteActivity extends SherlockPreferenceActivity implements 
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);		
 		setTitle(R.string.title_update_remote);
+    setContentView(R.layout.preference_layout);
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		getListView().setCacheColorHint(0x00000000); // Set cache color hint to transparent.
 		addPreferencesFromResource(R.xml.remote_preference); // We still use this for compatibility.

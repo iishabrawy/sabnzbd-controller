@@ -46,13 +46,18 @@
         <item name="background">@color/ab_background</item>
     </style>
 
-    <!-- ListView separator style -->
-    <style name="ListView" />
+    <!-- Preference text header style -->
+    <style name="Preference" />
+    <style name="Preference.Header" />
 
-    <style name="ListView.Separator">
-        <item name="android:background">@color/ab_background</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:paddingLeft">6dip</item>
+    <style name="Preference.Header.Text">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:textColor">@color/secondary_text_holo_light</item>
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:textSize">@dimen/preference_header_text_size</item>
+        <item name="android:paddingLeft">8dip</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="textAllCaps">true</item>
         <item name="fontface">fonts/Roboto-Bold.ttf</item>
     </style>
 

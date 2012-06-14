@@ -2,5 +2,9 @@
 <resources>
 
     <dimen name="listview_row_min_height">48dip</dimen>
+    <dimen name="listview_padding">6dip</dimen>
+    <dimen name="preference_header_text_size">14sp</dimen>
+    <dimen name="preference_item_padding_side">8dip</dimen>
+    <dimen name="preference_screen_header_padding_side">16dip</dimen>
 
 </resources>

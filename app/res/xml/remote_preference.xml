@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <PreferenceCategory
-        android:layout="@layout/prefs_header_general"
+        android:layout="@layout/preference_header"
         android:title="@string/general" >
         <com.gmail.at.faint545.views.SabEditTextPreference
             android:key="nickname"
@@ -34,7 +34,7 @@
             android:title="@string/prefs_refresh_interval_title" />
     </PreferenceCategory>
     <PreferenceCategory
-        android:layout="@layout/prefs_header_auth"
+        android:layout="@layout/preference_header"
         android:title="@string/auth" >
         <com.gmail.at.faint545.views.CompoundEditTextPreference
             android:key="apikey"
